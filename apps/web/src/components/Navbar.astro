@@ -1,0 +1,270 @@
+---
+import { Image } from 'astro:assets'
+import { User, Menu, X, Languages, ChevronDown, Check } from '@lucide/astro'
+import { APP_NAME } from '@app/shared'
+import { CONTACT_EMAIL } from '../constants'
+import {
+  defaultLanguage,
+  languages,
+  useTranslations,
+  type Language,
+} from '../i18n'
+import { localizePath, pathWithoutLanguage } from '../helpers/locale-helper'
+import { APP_HOME } from '../helpers/app-path-helper'
+import logo from '../assets/logo.svg'
+
+interface Props {
+  lang?: Language
+}
+
+const { lang = defaultLanguage } = Astro.props
+
+const t = useTranslations(lang)
+const path = (to: string) => localizePath(to, lang)
+
+interface NavLink {
+  label: string
+  href: string
+  auth?: 'out' | 'in'
+  admin?: boolean
+}
+
+// The navigation follows the session, not the page: a guest sees the public
+// site's links and a user the app's, wherever they are, so moving between
+// pages never reshuffles it. Inside the app the user's home is the app, so the
+// landing has no place there. Both sets are rendered and the session picks one
+// (see AuthGuard), because these pages are static.
+const homes = [
+  { href: path('/'), auth: 'out' },
+  { href: path(APP_HOME), auth: 'in' },
+]
+
+// Admin is rendered for every user and hidden unless the page is marked
+// `is-admin` (see AuthGuard). Hiding it is cosmetic: the API refuses /admin to
+// anyone else.
+const links: NavLink[] = [
+  { label: t('nav.home'), href: path('/'), auth: 'out' },
+  { label: t('nav.dashboard'), href: path(APP_HOME), auth: 'in' },
+  ...(CONTACT_EMAIL
+    ? [
+        {
+          label: t('nav.contact'),
+          href: path('/contact'),
+          auth: 'out' as const,
+        },
+      ]
+    : []),
+  { label: t('nav.admin'), href: path('/admin'), auth: 'in', admin: true },
+]
+
+// Astro builds directory-style URLs, so the current path arrives with a
+// trailing slash ("/app/profile/") while the links don't carry one.
+const currentPath = Astro.url.pathname.replace(/\/+$/, '') || '/'
+
+const linkClasses = (href: string) => [
+  'rounded-md px-3 py-2 text-sm font-medium transition-colors',
+  currentPath === href
+    ? 'bg-surface-raised text-foreground'
+    : 'text-muted hover:bg-surface hover:text-foreground',
+]
+
+// Switching language lands on the same page. The query string can't be added
+// here — these pages are static, so at build time there isn't one — so the
+// script below appends it in the browser.
+const here = pathWithoutLanguage(currentPath)
+const languageLinks = Object.entries(languages).map(([code, label]) => ({
+  code: code as Language,
+  label,
+  href: localizePath(here, code as Language),
+}))
+---
+
+<header class="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
+  <nav class="mx-auto flex h-16 max-w-7xl items-center gap-8 px-4 sm:px-6 lg:px-8">
+    <!-- Logo -->
+    {homes.map((home) => (
+      <a
+        href={home.href}
+        data-auth={home.auth}
+        class="flex items-center gap-2.5"
+      >
+        <Image src={logo} alt="" width={36} height={36} class="size-9" />
+        <span class="text-lg font-bold tracking-tight">{APP_NAME}</span>
+      </a>
+    ))}
+
+    <!-- Links (desktop) -->
+    <ul class="hidden flex-1 items-center gap-1 md:flex">
+      {links.map((link) => (
+        <li data-auth={link.auth} data-admin={link.admin ? '' : undefined}>
+          <a href={link.href} class:list={linkClasses(link.href)}>
+            {link.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <!-- User -->
+    <div class="ml-auto flex items-center gap-4">
+      <!-- Language -->
+      <div class="relative">
+        <button
+          id="language-toggle"
+          type="button"
+          class="group flex items-center gap-1.5 rounded-md px-2 py-2 text-muted transition hover:bg-surface hover:text-foreground"
+          aria-label={t('nav.language')}
+          aria-haspopup="true"
+          aria-expanded="false"
+          aria-controls="language-menu"
+        >
+          <Languages class="size-4" />
+          <span class="text-xs font-semibold uppercase">{lang}</span>
+          <ChevronDown class="size-3 transition-transform group-aria-expanded:rotate-180" />
+        </button>
+
+        <ul
+          id="language-menu"
+          class="absolute right-0 z-50 mt-2 hidden min-w-40 space-y-1 rounded-lg border border-border bg-surface p-1 shadow-2xl"
+        >
+          {languageLinks.map((language) => (
+            <li>
+              <a
+                href={language.href}
+                lang={language.code}
+                hreflang={language.code}
+                class:list={[
+                  'flex items-center justify-between gap-3 rounded-md px-3 py-2 text-sm transition-colors',
+                  language.code === lang
+                    ? 'bg-surface-raised text-foreground'
+                    : 'text-muted hover:bg-surface-raised hover:text-foreground',
+                ]}
+                aria-current={language.code === lang ? 'true' : undefined}
+              >
+                {language.label}
+                {language.code === lang && (
+                  <Check class="size-4 text-primary-400" />
+                )}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Guest: log in -->
+      <a
+        href={path('/login')}
+        data-auth="out"
+        class="rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-primary-50 transition hover:bg-primary-500"
+      >
+        {t('nav.login')}
+      </a>
+
+      <!-- Session: the profile -->
+      <a
+        href={path('/app/profile')}
+        data-auth="in"
+        class="flex size-9 items-center justify-center rounded-full bg-primary-800 text-primary-100 ring-2 ring-primary-600/40 transition hover:ring-primary-500"
+        aria-label={t('nav.profile')}
+      >
+        <User class="size-5" />
+      </a>
+
+      <!-- Menu button (mobile) -->
+      <button
+        id="menu-toggle"
+        type="button"
+        class="group flex size-9 items-center justify-center rounded-md text-muted transition hover:bg-surface hover:text-foreground md:hidden"
+        aria-label={t('nav.menu')}
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <Menu class="size-5 group-aria-expanded:hidden" />
+        <X class="hidden size-5 group-aria-expanded:block" />
+      </button>
+    </div>
+  </nav>
+
+  <!-- Links (mobile) -->
+  <div id="mobile-menu" class="hidden border-t border-border md:hidden">
+    <ul class="space-y-1 px-4 py-3 sm:px-6">
+      {links.map((link) => (
+        <li data-auth={link.auth} data-admin={link.admin ? '' : undefined}>
+          <a href={link.href} class:list={['block', ...linkClasses(link.href)]}>
+            {link.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</header>
+
+<script>
+  import { getToken, getUser, setUser } from '../services/session'
+  import { apiLanguageFromSite } from '../helpers/locale-helper'
+  import type { Language } from '../i18n'
+
+  const toggle = document.getElementById('menu-toggle')
+  const menu = document.getElementById('mobile-menu')
+
+  toggle?.addEventListener('click', () => {
+    const isOpen = menu?.classList.toggle('hidden') === false
+    toggle.setAttribute('aria-expanded', String(isOpen))
+  })
+
+  const languageToggle = document.getElementById('language-toggle')
+  const languageMenu = document.getElementById('language-menu')
+
+  // Carry the query string across the switch: /app/item?id=… is a static page
+  // whose links were built without it, and losing it lands on a page with no
+  // record to show.
+  if (location.search) {
+    languageMenu?.querySelectorAll('a[hreflang]').forEach((link) => {
+      link.setAttribute('href', link.getAttribute('href') + location.search)
+    })
+  }
+
+  // A logged-in user picking a language here is setting their profile
+  // language, not just browsing — persist it. Fired with keepalive since the
+  // link's own navigation starts immediately after and would otherwise abort
+  // the request mid-flight.
+  languageMenu?.querySelectorAll('a[hreflang]').forEach((link) => {
+    link.addEventListener('click', () => {
+      const token = getToken()
+      const code = link.getAttribute('hreflang') as Language | null
+      if (!token || !code) return
+
+      // Update the local copy immediately so a same-session redirect (e.g.
+      // LocaleGuard on the page we're about to land on) sees the new
+      // language right away instead of fighting this choice.
+      const user = getUser()
+      if (user) setUser({ ...user, language: apiLanguageFromSite(code) })
+
+      fetch(`${import.meta.env.PUBLIC_API_URL}/auth/me`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ language: apiLanguageFromSite(code) }),
+        keepalive: true,
+      })
+    })
+  })
+
+  const closeLanguages = () => {
+    languageMenu?.classList.add('hidden')
+    languageToggle?.setAttribute('aria-expanded', 'false')
+  }
+
+  languageToggle?.addEventListener('click', (event) => {
+    event.stopPropagation()
+    const isOpen = languageMenu?.classList.toggle('hidden') === false
+    languageToggle.setAttribute('aria-expanded', String(isOpen))
+  })
+
+  // A dropdown that only closes by clicking its own button is a trap.
+  document.addEventListener('click', closeLanguages)
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeLanguages()
+  })
+</script>

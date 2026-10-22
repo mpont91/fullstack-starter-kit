@@ -1,0 +1,85 @@
+---
+export { getLanguagePaths as getStaticPaths } from '../../helpers/locale-helper'
+import { Boxes, Languages, ShieldCheck } from '@lucide/astro'
+import Layout from '../../layouts/Layout.astro'
+import { useTranslations } from '../../i18n'
+import { languageFromPath, localizePath } from '../../helpers/locale-helper'
+
+const lang = languageFromPath(Astro.url.pathname)
+const t = useTranslations(lang)
+const path = (to: string) => localizePath(to, lang)
+
+const features = [
+  {
+    title: t('home.features.one.title'),
+    detail: t('home.features.one.detail'),
+    icon: ShieldCheck,
+  },
+  {
+    title: t('home.features.two.title'),
+    detail: t('home.features.two.detail'),
+    icon: Languages,
+  },
+  {
+    title: t('home.features.three.title'),
+    detail: t('home.features.three.detail'),
+    icon: Boxes,
+  },
+]
+
+const steps = [
+  { title: t('home.how.step1.title'), detail: t('home.how.step1.detail') },
+  { title: t('home.how.step2.title'), detail: t('home.how.step2.detail') },
+  { title: t('home.how.step3.title'), detail: t('home.how.step3.detail') },
+]
+---
+
+<Layout guestOnly>
+  <section class="mx-auto max-w-3xl py-16 text-center sm:py-24">
+    <h1 class="text-4xl font-bold tracking-tight whitespace-pre-line sm:text-6xl leading-snug">
+      {t('home.hero.title')}
+    </h1>
+
+    <p class="mx-auto mt-6 max-w-xl text-lg text-muted">
+      {t('home.hero.subtitle')}
+    </p>
+
+    <div class="mt-10 flex items-center justify-center gap-3">
+      <a
+        href={path('/login')}
+        class="inline-flex items-center gap-2 rounded-lg bg-primary-600 px-6 py-3 text-sm font-semibold text-primary-50 transition hover:bg-primary-500"
+      >
+        {t('home.hero.cta')}
+      </a>
+    </div>
+  </section>
+
+  <section class="grid grid-cols-1 gap-4 pb-16 sm:grid-cols-3">
+    {features.map((feature) => (
+      <div class="rounded-xl border border-border bg-surface p-6">
+        <span class="flex size-11 items-center justify-center rounded-lg bg-tile text-primary-300">
+          <feature.icon class="size-5" />
+        </span>
+        <h2 class="mt-4 font-semibold">{feature.title}</h2>
+        <p class="mt-2 text-sm text-muted">{feature.detail}</p>
+      </div>
+    ))}
+  </section>
+
+  <section class="pb-16">
+    <h2 class="text-center text-2xl font-bold tracking-tight sm:text-3xl">
+      {t('home.how.title')}
+    </h2>
+    <ol class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+      {steps.map((step, index) => (
+        <li class="rounded-xl border border-border bg-surface p-6">
+          <span class="flex size-11 items-center justify-center rounded-lg bg-tile font-semibold text-primary-300">
+            {index + 1}
+          </span>
+          <h3 class="mt-4 font-semibold">{step.title}</h3>
+          <p class="mt-2 text-sm text-muted">{step.detail}</p>
+        </li>
+      ))}
+    </ol>
+  </section>
+</Layout>

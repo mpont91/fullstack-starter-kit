@@ -1,0 +1,63 @@
+---
+import { Copy, Check } from '@lucide/astro'
+import { CONTACT_EMAIL } from '../constants'
+import { defaultLanguage, useTranslations, type Language } from '../i18n'
+
+interface Props {
+  lang?: Language
+  class?: string
+}
+
+const { lang = defaultLanguage, class: className } = Astro.props
+
+const t = useTranslations(lang)
+---
+
+{/* A mailto: opens nothing for anyone reading their mail in a browser tab, and
+    it fails silently. The address itself is the fallback that always works. */}
+{CONTACT_EMAIL && (
+  <span class:list={['inline-flex items-center gap-1.5', className]}>
+    <a
+      href={`mailto:${CONTACT_EMAIL}`}
+      class="underline decoration-border underline-offset-4 transition hover:text-foreground hover:decoration-primary-500"
+    >
+      {CONTACT_EMAIL}
+    </a>
+    <button
+      type="button"
+      class="contact-copy rounded p-1 text-muted transition hover:bg-surface-raised hover:text-foreground"
+      data-email={CONTACT_EMAIL}
+      aria-label={t('contact.copy')}
+      title={t('contact.copy')}
+    >
+      <Copy class="size-3.5" data-copy-idle />
+      <Check class="hidden size-3.5 text-primary-400" data-copy-done />
+    </button>
+  </span>
+)}
+
+<script>
+  document.querySelectorAll('.contact-copy').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const email = button.getAttribute('data-email')
+      const idle = button.querySelector('[data-copy-idle]')
+      const done = button.querySelector('[data-copy-done]')
+      if (!email) return
+
+      try {
+        await navigator.clipboard.writeText(email)
+      } catch {
+        // Clipboard access can be refused; the address is on screen either way,
+        // so there's nothing to recover from.
+        return
+      }
+
+      idle?.classList.add('hidden')
+      done?.classList.remove('hidden')
+      setTimeout(() => {
+        idle?.classList.remove('hidden')
+        done?.classList.add('hidden')
+      }, 2000)
+    })
+  })
+</script>

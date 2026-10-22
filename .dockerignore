@@ -1,0 +1,17 @@
+**/node_modules
+**/dist
+**/.env
+**/.astro
+.git
+.idea
+.vscode
+.claude
+docs
+**/*.md
+**/.DS_Store
+**/npm-debug.log
+# Only the API is built into an image; the web keeps its manifest so the
+# workspace lockfile still resolves.
+apps/web/*
+!apps/web/package.json
+apps/api/tests

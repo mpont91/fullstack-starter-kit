@@ -1,0 +1,17 @@
+---
+export { getLanguagePaths as getStaticPaths } from '../../helpers/locale-helper'
+import Layout from '../../layouts/Layout.astro'
+import VerifyEmail from '../../components/VerifyEmail.vue'
+import { APP_NAME } from '@app/shared'
+import { useTranslations } from '../../i18n'
+import { languageFromPath } from '../../helpers/locale-helper'
+
+const lang = languageFromPath(Astro.url.pathname)
+const t = useTranslations(lang)
+---
+
+<Layout title={`${t('verify.title')} · ${APP_NAME}`}>
+  <div class="py-12 sm:py-20">
+    <VerifyEmail client:load lang={lang} />
+  </div>
+</Layout>

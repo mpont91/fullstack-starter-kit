@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Language {
+  EN
+  ES
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum AdminActionType {
+  DELETE_USER
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  // Null for an account created with Google until it sets a password through
+  // the forgotten-password email.
+  hash      String?
+  // Google's account id (`sub`), set the first time the user signs in with
+  // Google. The only thing kept from Google besides the email.
+  googleId  String?  @unique
+  language  Language @default(EN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  passwordResetTokens PasswordResetToken[]
+
+  // Tokens issued before this instant are refused. Moved forward on every
+  // password change or reset, which is how those end the user's other
+  // sessions without the server having to know every token it ever issued.
+  sessionsValidFrom DateTime?
+
+  // Null until the user clicks the link in the welcome email; logging in
+  // needs it. The pending link is stored on the user rather than in its own
+  // table because only the latest one matters: resending replaces it.
+  emailVerifiedAt       DateTime?
+  verificationTokenHash String?   @unique
+  verificationExpiresAt DateTime?
+
+  // Never set from the app, so nobody can make themselves an admin: it's
+  // granted from the command line (`make api/grant-admin`).
+  role Role @default(USER)
+}
+
+// A single-use link sent by email so a user who forgot their password can set
+// a new one. tokenHash is a plain SHA-256 of the emailed token, not bcrypt:
+// the token is already 256 bits of random data, not a guessable human choice,
+// so a fast deterministic hash that supports an indexed lookup is correct
+// here.
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
+// A session ended by logging out. JWTs are stateless, so a logout only means
+// something if the server remembers which tokens it has seen the end of. A row
+// is useless once its token would have expired anyway, and is pruned then.
+model RevokedToken {
+  jti       String   @id
+  expiresAt DateTime
+
+  @@index([expiresAt])
+}
+
+// What an admin did to whose account. Neither id is a foreign key: the trail
+// has to outlive both a deleted user and the admin who deleted them. Only ids
+// are kept, so a deleted user's email doesn't linger here.
+model AdminAction {
+  id           String          @id @default(cuid())
+  adminId      String
+  action       AdminActionType
+  targetUserId String
+  details      Json?
+  createdAt    DateTime        @default(now())
+
+  @@index([targetUserId, createdAt])
+}

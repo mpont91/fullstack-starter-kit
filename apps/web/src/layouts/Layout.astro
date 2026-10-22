@@ -1,0 +1,63 @@
+---
+import '../styles/global.css'
+import Navbar from '../components/Navbar.astro'
+import Footer from '../components/Footer.astro'
+import AuthGuard from '../components/AuthGuard.astro'
+import LocaleGuard from '../components/LocaleGuard.astro'
+import { APP_NAME } from '@app/shared'
+import { useTranslations, type Language } from '../i18n'
+import { languageFromPath } from '../helpers/locale-helper'
+import { needsSession } from '../helpers/app-path-helper'
+import Analytics from '@vercel/analytics/astro'
+
+interface Props {
+  title?: string
+  description?: string
+  guestOnly?: boolean
+}
+
+// Taken from the URL rather than passed down: every page under /es is Spanish
+// by construction, so there's nothing for a page to get wrong.
+const lang: Language = languageFromPath(Astro.url.pathname)
+const t = useTranslations(lang)
+// Likewise, whether a page needs a session: the app under /app, and the admin
+// area beside it.
+const privatePage = needsSession(Astro.url.pathname)
+
+const {
+  title = APP_NAME,
+  description = t('app.description'),
+  guestOnly = false,
+} = Astro.props
+---
+
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <AuthGuard requireAuth={privatePage} guestOnly={guestOnly} lang={lang} />
+    <LocaleGuard lang={lang} />
+    <Analytics />
+  </head>
+  <body class="flex min-h-screen flex-col antialiased">
+    <div
+      class="pointer-events-none fixed inset-x-0 top-0 -z-10 h-130 bg-[radial-gradient(ellipse_at_top,var(--color-halo)_0%,transparent_65%)]"
+      aria-hidden="true"
+    ></div>
+    <Navbar lang={lang} />
+    <main class="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+    <script>
+      import { initSentry } from '../monitoring/sentry'
+
+      initSentry()
+    </script>
+  </body>
+</html>

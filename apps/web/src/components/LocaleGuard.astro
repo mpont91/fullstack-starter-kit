@@ -1,0 +1,73 @@
+---
+import { STORAGE_PREFIX } from '@app/shared'
+import { defaultLanguage, languages, type Language } from '../i18n'
+import { localizePath, pathWithoutLanguage } from '../helpers/locale-helper'
+
+interface Props {
+  lang?: Language
+}
+
+const { lang = defaultLanguage } = Astro.props
+
+// Resolved at build time, same trick as AuthGuard's loginPath: this page only
+// exists in one language, so both possible targets can be baked in instead of
+// worked out in the browser.
+const here = pathWithoutLanguage(Astro.url.pathname)
+const langPaths = Object.fromEntries(
+  Object.keys(languages).map((code) => [
+    code,
+    localizePath(here, code as Language),
+  ]),
+) as Record<Language, string>
+---
+
+<script is:inline define:vars={{ lang, langPaths, STORAGE_PREFIX }}>
+  function goTo(target) {
+    if (target === lang) return
+    location.replace(langPaths[target] + location.search + location.hash)
+  }
+
+  const authed = !!localStorage.getItem(STORAGE_PREFIX + '.token')
+
+  if (authed) {
+    // A logged-in user's saved language is authoritative — no detection, just
+    // follow it.
+    let user = null
+    try {
+      user = JSON.parse(
+        localStorage.getItem(STORAGE_PREFIX + '.user') || 'null',
+      )
+    } catch {
+      // Malformed JSON in storage — treated the same as no user.
+    }
+    const saved =
+      user?.language === 'EN' || user?.language === 'ES'
+        ? user.language === 'ES'
+          ? 'es'
+          : 'en'
+        : null
+    if (saved) {
+      localStorage.setItem(STORAGE_PREFIX + '.language', saved)
+      goTo(saved)
+    }
+  } else if (!localStorage.getItem(STORAGE_PREFIX + '.language')) {
+    // First-ever visit with no explicit signal yet. Only guess from the
+    // browser on the default-language entry: someone landing directly on
+    // /es/... (a shared link) has already made their choice, so record it
+    // instead of overriding it.
+    if (lang === 'en') {
+      const primary = (
+        (navigator.languages && navigator.languages[0]) ||
+        navigator.language ||
+        'en'
+      )
+        .toLowerCase()
+        .split('-')[0]
+      const detected = ['es', 'ca', 'gl'].includes(primary) ? 'es' : 'en'
+      localStorage.setItem(STORAGE_PREFIX + '.language', detected)
+      goTo(detected)
+    } else {
+      localStorage.setItem(STORAGE_PREFIX + '.language', lang)
+    }
+  }
+</script>

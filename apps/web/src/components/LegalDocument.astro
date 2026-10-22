@@ -1,0 +1,35 @@
+---
+import type { MarkdownInstance } from 'astro'
+import { defaultLanguage, useTranslations, type Language } from '../i18n'
+
+interface Props {
+  document: 'privacy' | 'terms'
+  lang?: Language
+}
+
+const { document, lang = defaultLanguage } = Astro.props
+
+const t = useTranslations(lang)
+
+// Legal text lives as one Markdown file per language rather than as i18n keys:
+// it's long-form prose, and each translation is reviewed as a whole document.
+const documents = import.meta.glob<MarkdownInstance<{ updated: string }>>(
+  '../legal/*.md',
+  { eager: true },
+)
+const { Content, frontmatter } = documents[`../legal/${document}.${lang}.md`]
+
+const updated = new Intl.DateTimeFormat(lang, { dateStyle: 'long' }).format(
+  new Date(frontmatter.updated),
+)
+---
+
+<article class="mx-auto max-w-3xl py-12 sm:py-16">
+  <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">
+    {t(`legal.${document}.title`)}
+  </h1>
+  <p class="mt-2 text-sm text-muted">{t('legal.updated', { date: updated })}</p>
+  <div class="mt-8 space-y-4 leading-relaxed text-muted [&_a]:text-primary-400 [&_a:hover]:text-primary-300 [&_code]:text-foreground [&_h2]:pt-6 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-foreground [&_li]:mt-1 [&_strong]:text-foreground [&_table]:w-full [&_table]:text-sm [&_td]:border-t [&_td]:border-border [&_td]:py-2 [&_td]:pr-4 [&_td]:align-top [&_th]:py-2 [&_th]:pr-4 [&_th]:text-left [&_th]:text-foreground [&_ul]:list-disc [&_ul]:pl-6">
+    <Content />
+  </div>
+</article>

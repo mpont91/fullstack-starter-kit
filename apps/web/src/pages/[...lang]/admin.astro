@@ -1,0 +1,15 @@
+---
+export { getLanguagePaths as getStaticPaths } from '../../helpers/locale-helper'
+import Layout from '../../layouts/Layout.astro'
+import AdminPanel from '../../components/AdminPanel.vue'
+import { APP_NAME } from '@app/shared'
+import { useTranslations } from '../../i18n'
+import { languageFromPath } from '../../helpers/locale-helper'
+
+const lang = languageFromPath(Astro.url.pathname)
+const t = useTranslations(lang)
+---
+
+<Layout title={`${t('admin.title')} · ${APP_NAME}`}>
+  <AdminPanel client:only="vue" lang={lang} />
+</Layout>

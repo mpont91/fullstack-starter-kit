@@ -1,0 +1,55 @@
+---
+import { defaultLanguage, type Language } from '../i18n'
+import { STORAGE_PREFIX } from '@app/shared'
+import { localizePath } from '../helpers/locale-helper'
+import { APP_HOME } from '../helpers/app-path-helper'
+
+interface Props {
+  requireAuth?: boolean
+  guestOnly?: boolean
+  lang?: Language
+}
+
+const {
+  requireAuth = false,
+  guestOnly = false,
+  lang = defaultLanguage,
+} = Astro.props
+
+// Resolved at build time: this page only exists in one language, so the guard
+// doesn't have to work it out in the browser.
+const loginPath = localizePath('/login', lang)
+const appHomePath = localizePath(APP_HOME, lang)
+---
+
+<script
+  is:inline
+  define:vars={{
+    requireAuth,
+    guestOnly,
+    loginPath,
+    appHomePath,
+    STORAGE_PREFIX,
+  }}
+>
+  const authed = !!localStorage.getItem(STORAGE_PREFIX + '.token')
+  document.documentElement.classList.add(authed ? 'is-authed' : 'is-guest')
+  // Only decides whether the Admin link shows; the API checks the role itself.
+  try {
+    const user = JSON.parse(
+      localStorage.getItem(STORAGE_PREFIX + '.user') || 'null',
+    )
+    if (authed && user && user.role === 'ADMIN') {
+      document.documentElement.classList.add('is-admin')
+    }
+  } catch {
+    // A corrupt stored user just means no Admin link.
+  }
+  if (requireAuth && !authed) {
+    const redirect = encodeURIComponent(location.pathname + location.search)
+    location.replace(loginPath + '?redirect=' + redirect)
+  }
+  // With a session, the landing and the login pages have nothing to offer:
+  // the user's home is the app.
+  if (guestOnly && authed) location.replace(appHomePath)
+</script>

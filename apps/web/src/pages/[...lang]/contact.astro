@@ -1,0 +1,24 @@
+---
+export { getLanguagePaths as getStaticPaths } from '../../helpers/locale-helper'
+import Layout from '../../layouts/Layout.astro'
+import ContactEmail from '../../components/ContactEmail.astro'
+import { APP_NAME } from '@app/shared'
+import { useTranslations } from '../../i18n'
+import { languageFromPath } from '../../helpers/locale-helper'
+
+const lang = languageFromPath(Astro.url.pathname)
+const t = useTranslations(lang)
+---
+
+<Layout title={`${t('contact.title')} · ${APP_NAME}`}>
+  <section class="mx-auto max-w-2xl py-12 text-center sm:py-16">
+    <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">
+      {t('contact.title')}
+    </h1>
+    <p class="mt-4 text-lg text-muted">{t('contact.subtitle')}</p>
+    <p class="mt-8 flex flex-wrap items-center justify-center gap-1.5 text-sm text-muted">
+      {t('contact.label')}
+      <ContactEmail lang={lang} />
+    </p>
+  </section>
+</Layout>
