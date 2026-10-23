@@ -30,13 +30,15 @@ explained again: the _why_ is in `docs/ARCHITECTURE.md`, the _how_ in the
 
 ### 1. Create the repository
 
+On [the template's page](https://github.com/mpont91/fullstack-starter-kit),
+**Use this template → Create a new repository**, then clone it with SSH:
+
 ```bash
-gh repo create <name> --private --template <owner>/fullstack-starter-kit --clone
+git clone git@github.com:<owner>/<name>.git
 cd <name>
 ```
 
-Or "Use this template" on GitHub. The new repository starts from a single
-commit, without this one's history.
+The new repository starts from a single commit, without this one's history.
 
 ### 2. Make it yours
 
