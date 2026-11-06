@@ -212,7 +212,7 @@ async function confirmPending() {
                   <th class="px-4 py-3"></th>
                 </tr>
               </thead>
-              <tbody v-if="isLoading">
+              <tbody v-if="isLoading" class="loading-late">
                 <tr v-for="row in 5" :key="row" class="border-t border-border">
                   <td colspan="4" class="px-4 py-3">
                     <Skeleton class="h-4 w-full" />

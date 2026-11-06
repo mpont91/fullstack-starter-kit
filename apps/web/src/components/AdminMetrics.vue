@@ -54,7 +54,7 @@ onMounted(load)
       </Button>
     </Card>
 
-    <Card v-else-if="isLoading" as="div" class="space-y-3">
+    <Card v-else-if="isLoading" as="div" class="loading-late space-y-3">
       <Skeleton v-for="row in 6" :key="row" class="h-4 w-full" />
     </Card>
 

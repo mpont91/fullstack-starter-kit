@@ -50,7 +50,7 @@ onMounted(async () => {
 <template>
   <Card as="section" class="mx-auto w-full max-w-sm space-y-4 p-7 text-center">
     <h1 class="text-2xl font-bold tracking-tight">{{ t('verify.title') }}</h1>
-    <div v-if="!error" class="space-y-2">
+    <div v-if="!error" class="loading-late space-y-2">
       <Skeleton class="mx-auto h-4 w-48" />
       <Skeleton class="mx-auto h-4 w-32" />
       <span class="sr-only">{{ t('verify.checking') }}</span>

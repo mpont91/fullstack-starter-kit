@@ -115,3 +115,16 @@
     display: none !important;
   }
 }
+
+/* Skeletons that wait before showing: a load that comes back at once shows
+   nothing in between, instead of a skeleton that flashes for a split second.
+   A slower one fades them in. */
+@keyframes loading-appear {
+  from {
+    opacity: 0;
+  }
+}
+
+.loading-late {
+  animation: loading-appear 200ms ease-out 400ms both;
+}

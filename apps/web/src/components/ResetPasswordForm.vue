@@ -90,7 +90,7 @@ async function handleSubmit() {
       <p class="mt-1 text-sm text-muted">{{ t('resetPassword.subtitle') }}</p>
     </div>
 
-    <div v-if="loadingEmail" class="mt-7 space-y-4">
+    <div v-if="loadingEmail" class="loading-late mt-7 space-y-4">
       <div v-for="field in 3" :key="field" class="space-y-1.5">
         <Skeleton class="h-4 w-32" />
         <Skeleton class="h-10 w-full rounded-lg" />

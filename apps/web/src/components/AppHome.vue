@@ -49,7 +49,7 @@ onMounted(load)
       <h1 class="text-2xl font-bold tracking-tight sm:text-3xl">
         {{ t('home.app.title') }}
       </h1>
-      <Skeleton v-if="isLoading" class="mt-2 h-5 w-64" />
+      <Skeleton v-if="isLoading" class="loading-late mt-2 h-5 w-64" />
       <p v-else-if="user" class="mt-1 text-muted">
         {{ t('home.app.signedInAs', { email: user.email }) }}
       </p>

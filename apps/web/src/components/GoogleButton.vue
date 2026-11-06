@@ -94,7 +94,7 @@ function loadGoogleIdentity(): Promise<GoogleIdentity> {
     <!-- Stands in for the button until Google's script has drawn it. -->
     <Skeleton
       v-if="isLoading"
-      class="absolute inset-x-0 top-0 mx-auto h-10 max-w-[400px] rounded-full"
+      class="loading-late absolute inset-x-0 top-0 mx-auto h-10 max-w-[400px] rounded-full"
     />
     <!-- Google's iframe paints an opaque white box behind the button on a
          page whose color scheme differs from its own; the site is dark. -->

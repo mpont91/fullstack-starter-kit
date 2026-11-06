@@ -195,9 +195,12 @@ a primitive rather than hand-rolling a styled `<button>`.
 
 **Loading and empty states.** Anything that loads shows `Skeleton`s shaped like
 the content it waits for (same rows, same sizes), never a "Loading…" line or a
-blank space; a busy label on a button is for actions, not loads. A view with no
-data shows `EmptyState`: a large icon, a short title, a hint of what to do and,
-when there is one, the action as a button; `compact` inside a section of a page.
+blank space; a busy label on a button is for actions, not loads. Every loading
+block carries `loading-late` (in `global.css`), so its skeletons wait 400 ms
+before showing and then fade in: a load that comes back at once doesn't flash
+them. A view with no data shows `EmptyState`: a large icon, a short title, a
+hint of what to do and, when there is one, the action as a button; `compact`
+inside a section of a page.
 
 **Vue style.** `<script setup lang="ts">` always. `ref` for state, `computed`
 for derivation, `onMounted` for the initial fetch. Load state is the explicit
