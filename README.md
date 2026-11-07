@@ -23,7 +23,7 @@ explained again: the _why_ is in `docs/ARCHITECTURE.md`, the _how_ in the
 | Monitoring | Sentry in the API and the web (nothing personal reported), heap watchdog, crash detection, Vercel Analytics.          |
 | Tests      | `node:test` everywhere; API integration tests against a real Postgres, external services faked.                       |
 | Deploy     | Docker Compose on a VPS (`make deploy`), migrations from a throwaway container; the web on Vercel.                    |
-| Backups    | Nightly `pg_dump`, encrypted with `age`, to Backblaze B2; failure alerts through Sentry Crons; `make api/restore`.    |
+| Backups    | Nightly `pg_dump`, encrypted with `age`, to Backblaze B2; a failure raises a Sentry issue; `make api/restore`.        |
 | Docs       | `VISION`, `ROADMAP` and phase spec templates, the decision log, and a `CLAUDE.md` per app.                            |
 
 ## Starting a project

@@ -59,24 +59,26 @@ once() {
   fi
 }
 
-# A Sentry Crons check-in, through the API's own DSN. The first one creates the
-# monitor with its schedule, so Sentry raises an issue for a backup that fails
-# and for one that never runs (a missed check-in), the server's or the
-# service's death included. Without SENTRY_DSN, nothing. A check-in that can't
-# be sent is printed and never stops the backup.
-checkin() {
+# A Sentry issue in the API's project, through its own DSN, with the last lines
+# the backup printed: database and B2 errors, never data or keys. Without
+# SENTRY_DSN, nothing. A report that can't be sent is printed and never stops
+# the loop.
+report_failure() {
   [ -n "${SENTRY_DSN:-}" ] || return 0
   key=${SENTRY_DSN#*//}
   key=${key%%@*}
   host=${SENTRY_DSN#*@}
   host=${host%%/*}
   project=${SENTRY_DSN##*/}
-  curl -fsS -X POST -H 'Content-Type: application/json' \
-    "https://$host/api/$project/cron/nightly-backup/$key/" \
-    --data "{\"status\": \"$1\", \"monitor_config\": {
-      \"schedule\": {\"type\": \"crontab\", \"value\": \"0 3 * * *\"},
-      \"timezone\": \"UTC\", \"checkin_margin\": 30, \"max_runtime\": 30}}" \
-    > /dev/null || echo "backup: check-in failed" >&2
+  id=$(tr -d - < /proc/sys/kernel/random/uuid)
+  event=$(jq -nc --arg id "$id" --arg output "$1" '{
+    event_id: $id, level: "error", platform: "other",
+    environment: "production", message: "Nightly backup failed",
+    tags: {where: "nightly-backup"}, extra: {output: $output}}')
+  printf '%s\n%s\n%s\n' "{\"event_id\":\"$id\"}" '{"type":"event"}' "$event" \
+    | curl -fsS -X POST --data-binary @- \
+      "https://$host/api/$project/envelope/?sentry_key=$key&sentry_version=7" \
+      > /dev/null || echo "backup: failure report not sent" >&2
 }
 
 nightly() {
@@ -85,14 +87,14 @@ nightly() {
     next=$((now - now % 86400 + 3 * 3600))
     [ "$next" -gt "$now" ] || next=$((next + 86400))
     sleep $((next - now))
-    checkin in_progress
     # A child process, so `set -e` stops the backup that failed and not the
     # loop.
-    if "$0" once; then
-      checkin ok
+    if output=$("$0" once 2>&1); then
+      echo "$output"
     else
+      echo "$output" >&2
       echo "backup: failed" >&2
-      checkin error
+      report_failure "$(echo "$output" | tail -n 5)"
     fi
   done
 }

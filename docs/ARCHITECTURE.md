@@ -242,11 +242,11 @@ bucket's lifecycle rules, not the script's. Object Lock is left off: it would
 also block the deletions that keep a deleted account's data from living longer
 than the privacy policy says, and once on it can't be turned off.
 
-**A failed backup alerts through Sentry Crons**: a nightly check-in also catches
-the backup that never runs, which an error report can't. Sentry's free plan has
-one cron monitor per organisation: a second project on the same organisation
-either pays, uses another organisation, or falls back to reporting a failed
-backup as an issue (which misses a backup that never runs).
+**A failed backup raises a Sentry issue** in the API's project, with the last
+lines the script printed. Sentry Crons would also catch a backup that never
+runs, but its free plan has one cron monitor per organisation, and the owner's
+projects share one organisation, so none of them uses Crons: a missed run goes
+unnoticed until someone looks.
 
 ## Patterns
 

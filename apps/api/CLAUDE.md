@@ -443,14 +443,12 @@ rest of the stack.
   hides a file 7 days after upload and `weekly/` (Monday's backup, uploaded
   twice) after 28, both deleting it a day later. That's the "up to 30 days" the
   privacy policy promises for a deleted account; change one with the other.
-- **A failed backup raises a Sentry issue.** Each night the loop checks in to
-  Sentry Crons (monitor `nightly-backup`, in the API's project, through
-  `SENTRY_DSN`): `in_progress` before, `ok` or `error` after. The first check-in
-  creates the monitor with its schedule (03:00 UTC, 30 minutes' margin), so a
-  backup that fails and one that never runs, because the service or the server
-  is down, both alert. A failure also prints `backup: failed` to `make logs`,
-  and the loop carries on to the next night. `make backup` doesn't check in: a
-  manual run is outside the schedule.
+- **A failed backup raises a Sentry issue** in the API's project
+  (`where: nightly-backup`), sent by the script through `SENTRY_DSN` with the
+  last lines it printed. It also prints `backup: failed` to `make logs`, and the
+  loop carries on to the next night. A backup that never runs (the service or
+  the server down) raises nothing. `make backup` doesn't report: its failure is
+  on screen.
 
 ### Restoring
 
