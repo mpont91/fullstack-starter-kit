@@ -87,28 +87,39 @@ If another project already uses a port, change it in that app's `.env` (see
 
 ### 4. Accounts the product needs
 
-Each one is free at a small product's scale. They can come in any order.
+Each one is free at a small product's scale. They can come in any order. Each
+name links to its console; the providers named are the ones the owner's projects
+use, so one account serves them all.
 
-- [ ] **Domain**, with DNS you control.
-- [ ] **Resend:** verify the domain, create an API key → `RESEND_API_KEY`.
-- [ ] **Google Cloud:** an OAuth client of type "Web application", with the
-      production origin and `http://localhost:4321` as authorised JavaScript
-      origins → `GOOGLE_CLIENT_ID` in `apps/api/.env` and in
-      `apps/web/src/constants.ts`.
-- [ ] **Sentry** (EU region): one project for the API → `SENTRY_DSN`, one for
-      the web → `PUBLIC_SENTRY_DSN`.
-- [ ] **Backblaze B2** (EU region): a private bucket, an application key with
-      _Read and Write_ access restricted to it → `BACKUP_B2_KEY_ID`,
-      `BACKUP_B2_APPLICATION_KEY`. Lifecycle rules in the B2 console: `daily/`
-      hides files after 7 days, `weekly/` after 28, both delete a day after
-      hiding.
+- [ ] **Domain,** with its DNS, on [IONOS](https://my.ionos.es/).
+- [ ] **A VPS** on [Clouding.io](https://portal.clouding.io/) (see "The server",
+      below).
+- [ ] **[Resend](https://resend.com/emails):** verify the domain, create an API
+      key → `RESEND_API_KEY`.
+- [ ] **[Google Cloud](https://console.cloud.google.com/apis/credentials):** an
+      OAuth client of type "Web application", with the production origin and
+      `http://localhost:4321` as authorised JavaScript origins →
+      `GOOGLE_CLIENT_ID` in `apps/api/.env` and in `apps/web/src/constants.ts`.
+- [ ] **[Sentry](https://sentry.io/)** (EU region): one project for the API →
+      `SENTRY_DSN`, one for the web → `PUBLIC_SENTRY_DSN`.
+- [ ] **[Backblaze B2](https://secure.backblaze.com/b2_buckets.htm)** (EU
+      region): a private bucket, an application key with _Read and Write_ access
+      restricted to it → `BACKUP_B2_KEY_ID`, `BACKUP_B2_APPLICATION_KEY`.
+      Lifecycle rules in the B2 console: `daily/` hides files after 7 days,
+      `weekly/` after 28, both delete a day after hiding.
 - [ ] **An age key pair** for the backups: `age-keygen`. The public key
       (`age1…`) → `BACKUP_AGE_RECIPIENT`; the private key goes only into the
-      password manager, never onto the server.
-- [ ] **Vercel:** import the repository with `apps/web` as root directory; set
-      `PUBLIC_API_URL` and `PUBLIC_SENTRY_DSN`.
-- [ ] **An uptime monitor** (UptimeRobot or Better Stack) on the web and on the
-      API's `/uptime`.
+      password manager, [Bitwarden](https://vault.bitwarden.com/), never onto
+      the server.
+- [ ] **[Vercel](https://vercel.com/dashboard):** import the repository with
+      `apps/web` as root directory; set `PUBLIC_API_URL` and
+      `PUBLIC_SENTRY_DSN`.
+- [ ] **[UptimeRobot](https://dashboard.uptimerobot.com/)**, a monitor on the
+      web and on the API's `/uptime`.
+
+Then list them all in the project's README, under "Services it uses": a table
+with each service (linked to its console), what it's for and where its key goes,
+so nobody has to remember where anything lives.
 
 ### 5. The server
 
