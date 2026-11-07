@@ -8,6 +8,8 @@ import { getPasswordResetEmail, resetPassword } from '../services/auth.service'
 import { ApiError } from '../services/api-client'
 import { APP_HOME } from '../helpers/app-path-helper'
 import Button from './ui/Button.vue'
+import FormField from './ui/FormField.vue'
+import TextInput from './ui/TextInput.vue'
 import Card from './ui/Card.vue'
 import Skeleton from './ui/Skeleton.vue'
 
@@ -91,7 +93,7 @@ async function handleSubmit() {
     </div>
 
     <div v-if="loadingEmail" class="loading-late mt-7 space-y-4">
-      <div v-for="field in 3" :key="field" class="space-y-1.5">
+      <div v-for="field in 3" :key="field" class="grid gap-1.5">
         <Skeleton class="h-4 w-32" />
         <Skeleton class="h-10 w-full rounded-lg" />
       </div>
@@ -103,49 +105,30 @@ async function handleSubmit() {
       class="mt-7 space-y-4"
       @submit.prevent="handleSubmit"
     >
-      <div class="space-y-1.5">
-        <label for="email" class="text-sm font-medium">
-          {{ t('resetPassword.email') }}
-        </label>
-        <input
-          id="email"
-          :value="email"
-          type="email"
-          disabled
-          class="w-full rounded-lg border border-border bg-surface px-3.5 py-2.5 text-sm text-muted"
-        />
-      </div>
+      <FormField :label="t('resetPassword.email')">
+        <TextInput v-model="email" type="email" disabled />
+      </FormField>
 
-      <div class="space-y-1.5">
-        <label for="password" class="text-sm font-medium">
-          {{ t('resetPassword.password') }}
-        </label>
-        <input
-          id="password"
+      <FormField :label="t('resetPassword.password')">
+        <TextInput
           v-model="password"
           type="password"
           autocomplete="new-password"
           required
           :minlength="PASSWORD_MIN_LENGTH"
           :placeholder="t('resetPassword.password.placeholder')"
-          class="w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition placeholder:text-muted focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
         />
-      </div>
+      </FormField>
 
-      <div class="space-y-1.5">
-        <label for="confirmPassword" class="text-sm font-medium">
-          {{ t('resetPassword.confirmPassword') }}
-        </label>
-        <input
-          id="confirmPassword"
+      <FormField :label="t('resetPassword.confirmPassword')">
+        <TextInput
           v-model="confirmPassword"
           type="password"
           autocomplete="new-password"
           required
           :placeholder="t('resetPassword.confirmPassword.placeholder')"
-          class="w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition placeholder:text-muted focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
         />
-      </div>
+      </FormField>
 
       <p v-if="error" class="text-sm text-danger-400">{{ error }}</p>
 

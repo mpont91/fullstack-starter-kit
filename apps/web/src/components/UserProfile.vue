@@ -20,6 +20,8 @@ import {
   siteLanguageFromApi,
 } from '../helpers/locale-helper'
 import Button from './ui/Button.vue'
+import FormField from './ui/FormField.vue'
+import TextInput from './ui/TextInput.vue'
 import Card from './ui/Card.vue'
 import ConfirmDialog from './ui/ConfirmDialog.vue'
 import GoogleButton from './GoogleButton.vue'
@@ -265,45 +267,30 @@ async function handleLanguageChange(code: Language) {
         </Button>
       </div>
       <form v-else class="space-y-4" @submit.prevent="handleChangePassword">
-        <div class="space-y-1.5">
-          <label for="currentPassword" class="text-sm font-medium">
-            {{ t('profile.password.current') }}
-          </label>
-          <input
-            id="currentPassword"
+        <FormField :label="t('profile.password.current')">
+          <TextInput
             v-model="currentPassword"
             type="password"
             autocomplete="current-password"
             required
-            class="w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition placeholder:text-muted focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
           />
-        </div>
-        <div class="space-y-1.5">
-          <label for="newPassword" class="text-sm font-medium">
-            {{ t('profile.password.new') }}
-          </label>
-          <input
-            id="newPassword"
+        </FormField>
+        <FormField :label="t('profile.password.new')">
+          <TextInput
             v-model="newPassword"
             type="password"
             autocomplete="new-password"
             required
-            class="w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition placeholder:text-muted focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
           />
-        </div>
-        <div class="space-y-1.5">
-          <label for="confirmNewPassword" class="text-sm font-medium">
-            {{ t('profile.password.confirm') }}
-          </label>
-          <input
-            id="confirmNewPassword"
+        </FormField>
+        <FormField :label="t('profile.password.confirm')">
+          <TextInput
             v-model="confirmNewPassword"
             type="password"
             autocomplete="new-password"
             required
-            class="w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition placeholder:text-muted focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
           />
-        </div>
+        </FormField>
         <p v-if="passwordError" class="text-sm text-danger-400">
           {{ passwordError }}
         </p>
@@ -368,22 +355,17 @@ async function handleLanguageChange(code: Language) {
           {{ deleteError }}
         </p>
       </div>
-      <form v-else class="space-y-1.5 pt-2" @submit.prevent="handleDelete">
-        <label for="deletePassword" class="text-sm font-medium text-foreground">
-          {{ t('profile.delete.password') }}
-        </label>
-        <input
-          id="deletePassword"
-          v-model="deletePassword"
-          type="password"
-          autocomplete="current-password"
-          required
-          :disabled="deleting"
-          class="w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-foreground outline-none transition focus:border-danger-400 focus:ring-1 focus:ring-danger-400"
-        />
-        <p v-if="deleteError" class="text-sm text-danger-400">
-          {{ deleteError }}
-        </p>
+      <form v-else class="pt-2" @submit.prevent="handleDelete">
+        <FormField :label="t('profile.delete.password')" :error="deleteError">
+          <TextInput
+            v-model="deletePassword"
+            type="password"
+            tone="danger"
+            autocomplete="current-password"
+            required
+            :disabled="deleting"
+          />
+        </FormField>
       </form>
     </ConfirmDialog>
   </div>

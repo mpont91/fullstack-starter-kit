@@ -7,6 +7,8 @@ import { defaultLanguage, type Language } from '../i18n'
 import { register } from '../services/auth.service'
 import { ApiError } from '../services/api-client'
 import Button from './ui/Button.vue'
+import FormField from './ui/FormField.vue'
+import TextInput from './ui/TextInput.vue'
 import Card from './ui/Card.vue'
 import ResendVerification from './ResendVerification.vue'
 import GoogleSignIn from './GoogleSignIn.vue'
@@ -93,51 +95,36 @@ async function handleSubmit() {
     </div>
 
     <form class="space-y-4" @submit.prevent="handleSubmit">
-      <div class="space-y-1.5">
-        <label for="email" class="text-sm font-medium">
-          {{ t('register.email') }}
-        </label>
-        <input
-          id="email"
+      <FormField :label="t('register.email')">
+        <TextInput
           v-model="email"
           type="email"
           autocomplete="email"
           required
           :placeholder="t('register.email.placeholder')"
-          class="w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition placeholder:text-muted focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
         />
-      </div>
+      </FormField>
 
-      <div class="space-y-1.5">
-        <label for="password" class="text-sm font-medium">
-          {{ t('register.password') }}
-        </label>
-        <input
-          id="password"
+      <FormField :label="t('register.password')">
+        <TextInput
           v-model="password"
           type="password"
           autocomplete="new-password"
           required
           :minlength="PASSWORD_MIN_LENGTH"
           :placeholder="t('register.password.placeholder')"
-          class="w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition placeholder:text-muted focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
         />
-      </div>
+      </FormField>
 
-      <div class="space-y-1.5">
-        <label for="confirmPassword" class="text-sm font-medium">
-          {{ t('register.confirmPassword') }}
-        </label>
-        <input
-          id="confirmPassword"
+      <FormField :label="t('register.confirmPassword')">
+        <TextInput
           v-model="confirmPassword"
           type="password"
           autocomplete="new-password"
           required
           :placeholder="t('register.confirmPassword.placeholder')"
-          class="w-full rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition placeholder:text-muted focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
         />
-      </div>
+      </FormField>
 
       <p v-if="error" class="text-sm text-danger-400">{{ error }}</p>
 

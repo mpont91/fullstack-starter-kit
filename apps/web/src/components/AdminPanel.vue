@@ -9,6 +9,7 @@ import { ApiError } from '../services/api-client'
 import { getUser } from '../services/auth.service'
 import Badge from './ui/Badge.vue'
 import Button from './ui/Button.vue'
+import TextInput from './ui/TextInput.vue'
 import Card from './ui/Card.vue'
 import ConfirmDialog from './ui/ConfirmDialog.vue'
 import Skeleton from './ui/Skeleton.vue'
@@ -180,12 +181,13 @@ async function confirmPending() {
             {{ t('admin.users.title', { count: total }) }}
           </h2>
           <form class="flex gap-2" @submit.prevent="applySearch">
-            <input
+            <TextInput
               v-model="search"
               type="search"
               :placeholder="t('admin.users.search')"
               :aria-label="t('admin.users.search')"
-              class="w-56 rounded-lg border border-border bg-background px-3 py-1.5 text-sm outline-none transition placeholder:text-muted focus:border-primary-600 focus:ring-1 focus:ring-primary-600"
+              size="small"
+              class="w-56"
             />
             <Button type="submit" variant="secondary" size="small">
               <Search class="size-4" />

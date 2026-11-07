@@ -188,10 +188,23 @@ or stock Tailwind palettes (`bg-green-500` is wrong; `bg-primary-600` is right).
 The UI is dark-first. A product's look is a new palette in those tokens (and the
 same colours in the API's `email-layout.ts`), not new classes.
 
+**Forms are built from `FormField` and its controls, never by hand.** A field is
+`<FormField label hint error>` around a `TextInput`, `TextArea` or `SelectInput`
+(all in `components/ui/`); anything else that types is built on them. The field
+owns the spacing, the label's link to the control (`useId`, handed down by
+`provide`), the hint and the error and what a screen reader reads with them
+(`aria-describedby`, `aria-invalid`); the controls own the look
+(`form-field.ts`), with a `small` size for an inline edit in a row and a
+`danger` tone for confirming something destructive. A control outside a field,
+inline, takes an `aria-label`. No `<input>`, `<select>` or `<label>` outside
+`components/ui/`. (Spacing by hand broke once already: Tailwind 4's `space-y-*`
+is a bottom margin, and a label is inline, so the browser dropped it.)
+
 **Reuse `src/components/ui/` primitives.** `Button`, `Card`, `Badge`,
-`ConfirmDialog`, `Skeleton`, `EmptyState`. They merge classes via `cn()` (clsx +
-tailwind-merge), so passing `class` from the outside overrides cleanly — extend
-a primitive rather than hand-rolling a styled `<button>`.
+`ConfirmDialog`, `Skeleton`, `EmptyState`, and the form ones above. They merge
+classes via `cn()` (clsx + tailwind-merge), so passing `class` from the outside
+overrides cleanly — extend a primitive rather than hand-rolling a styled
+`<button>`.
 
 **Loading and empty states.** Anything that loads shows `Skeleton`s shaped like
 the content it waits for (same rows, same sizes), never a "Loading…" line or a
