@@ -38,6 +38,34 @@ Besides the contract, `packages/shared` holds only what both apps genuinely
 need: `brand.ts` today. Add a module there only when the second app needs it
 too.
 
+### When a second frontend arrives
+
+A project with two webs (a public site and an app, say) adds `apps/<name>` and
+moves what both use into **`packages/ui`** (`@app/ui`), never into
+`packages/shared`: that is the contract the API also installs, and it doesn't
+carry Vue, CSS or images. While there is one frontend, everything stays in
+`apps/web`; nothing moves "in case".
+
+- **What moves:** the palette scales (out of `global.css`, into `theme.css`),
+  the logos (`src/assets/`, and the favicon out of `public/`, served by a small
+  endpoint in each app from the one copy), the base rules both stylesheets
+  repeat (`base.css`: font, base rules, `loading-late`), and the primitives in
+  `components/ui/` with `cn()`. A primitive that needs the app's words takes
+  them as props, or stays in the app (`ConfirmDialog`). Semantic tokens
+  (`background`, `surface`, `link`, `action`…) stay in each app's `global.css`,
+  with its own values: the components use only those, so they look native in
+  both.
+- **No build step:** the package ships its sources (`.vue`, `.astro`, `.css`)
+  and exports them by path (`"./components/*": "./src/components/*"`); each
+  app's Vite compiles them. Apps import `@app/ui/components/Button.vue`,
+  `@app/ui/theme.css`, `@app/ui/assets/logo.svg`.
+- **Tailwind skips dependencies:** `base.css` says `@source './components';` so
+  every app that imports it gets the package's classes.
+- **Its own gate:** a `Makefile` with `check` (`vue-tsc --noEmit`) and `test`,
+  run by the root `make check`; `eslint.config.mjs` gives it browser globals.
+- **After that, the rule holds both ways:** what only one frontend uses stays in
+  that app, and moves to `packages/ui` when the second one needs it.
+
 ## Security, in this product
 
 - A user's data is theirs. The admin panel shows accounts and counts, never what
