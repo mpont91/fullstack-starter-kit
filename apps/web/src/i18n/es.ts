@@ -64,7 +64,6 @@ export default {
   'login.password': 'Contraseña',
   'login.password.placeholder': '••••••••',
   'login.submit': 'Entrar',
-  'login.submitting': 'Entrando…',
   'login.error': 'Correo o contraseña incorrectos.',
   'login.error.notVerified':
     'Primero confirma tu email: pulsa el enlace que te enviamos al registrarte.',
@@ -89,7 +88,6 @@ export default {
   'forgotPassword.email': 'Correo',
   'forgotPassword.email.placeholder': 'tu@ejemplo.com',
   'forgotPassword.submit': 'Enviar enlace',
-  'forgotPassword.submitting': 'Enviando…',
   'forgotPassword.success':
     'Si ese correo existe, te hemos enviado un enlace para restablecer la contraseña. Revisa tu bandeja de entrada.',
   'forgotPassword.serverError':
@@ -104,7 +102,6 @@ export default {
   'resetPassword.confirmPassword': 'Confirma la contraseña',
   'resetPassword.confirmPassword.placeholder': '••••••••',
   'resetPassword.submit': 'Restablecer contraseña',
-  'resetPassword.submitting': 'Restableciendo…',
   'resetPassword.error.passwordTooShort':
     'La contraseña debe tener al menos 8 caracteres.',
   'resetPassword.error.passwordMismatch': 'Las contraseñas no coinciden.',
@@ -122,7 +119,6 @@ export default {
   'register.confirmPassword': 'Confirma la contraseña',
   'register.confirmPassword.placeholder': '••••••••',
   'register.submit': 'Crear cuenta',
-  'register.submitting': 'Creando cuenta…',
   'register.error.passwordTooShort':
     'La contraseña debe tener al menos 8 caracteres.',
   'register.error.passwordMismatch': 'Las contraseñas no coinciden.',
@@ -160,7 +156,6 @@ export default {
   'admin.subtitle': 'Las cuentas y cuántas se crean.',
   'admin.forbidden': 'Esta página es solo para administradores.',
   'admin.loadError': 'No se han podido cargar los datos.',
-  'admin.retry': 'Reintentar',
   'admin.actionError': 'No se ha podido completar. Inténtalo de nuevo.',
   'admin.users.title': 'Usuarios ({count})',
   'admin.users.search': 'Buscar por email',
@@ -192,13 +187,14 @@ export default {
   'profile.email': 'Correo',
   'profile.memberSince': 'Miembro desde',
   'profile.language': 'Idioma',
+  'profile.serverError':
+    'Algo ha fallado por nuestra parte. Inténtalo de nuevo más tarde.',
   'profile.logout': 'Cerrar sesión',
   'profile.password': 'Contraseña',
   'profile.password.current': 'Contraseña actual',
   'profile.password.new': 'Nueva contraseña',
   'profile.password.confirm': 'Confirma la nueva contraseña',
   'profile.password.submit': 'Cambiar contraseña',
-  'profile.password.saving': 'Guardando…',
   'profile.password.changed':
     'Contraseña cambiada. Se ha cerrado la sesión en tus otros dispositivos.',
   'profile.password.error.tooShort':

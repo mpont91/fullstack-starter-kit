@@ -63,7 +63,6 @@ export default {
   'login.password': 'Password',
   'login.password.placeholder': '••••••••',
   'login.submit': 'Log in',
-  'login.submitting': 'Logging in…',
   'login.error': 'Invalid email or password.',
   'login.error.notVerified':
     'Confirm your email first: click the link we sent you when you signed up.',
@@ -86,7 +85,6 @@ export default {
   'forgotPassword.email': 'Email',
   'forgotPassword.email.placeholder': 'you@example.com',
   'forgotPassword.submit': 'Send reset link',
-  'forgotPassword.submitting': 'Sending…',
   'forgotPassword.success':
     "If that email exists, we've sent a reset link. Check your inbox.",
   'forgotPassword.serverError':
@@ -101,7 +99,6 @@ export default {
   'resetPassword.confirmPassword': 'Confirm password',
   'resetPassword.confirmPassword.placeholder': '••••••••',
   'resetPassword.submit': 'Reset password',
-  'resetPassword.submitting': 'Resetting…',
   'resetPassword.error.passwordTooShort':
     'Password must be at least 8 characters.',
   'resetPassword.error.passwordMismatch': 'Passwords do not match.',
@@ -120,7 +117,6 @@ export default {
   'register.confirmPassword': 'Confirm password',
   'register.confirmPassword.placeholder': '••••••••',
   'register.submit': 'Create account',
-  'register.submitting': 'Creating account…',
   'register.error.passwordTooShort': 'Password must be at least 8 characters.',
   'register.error.passwordMismatch': 'Passwords do not match.',
   'register.error.emailTaken': 'That email is already registered.',
@@ -155,7 +151,6 @@ export default {
   'admin.subtitle': 'Accounts and how many sign up.',
   'admin.forbidden': 'This page is for administrators only.',
   'admin.loadError': "Couldn't load the admin data.",
-  'admin.retry': 'Try again',
   'admin.actionError': "That didn't go through. Please try again.",
   'admin.users.title': 'Users ({count})',
   'admin.users.search': 'Search by email',
@@ -187,13 +182,13 @@ export default {
   'profile.email': 'Email',
   'profile.memberSince': 'Member since',
   'profile.language': 'Language',
+  'profile.serverError': 'Something went wrong on our end. Try again later.',
   'profile.logout': 'Log out',
   'profile.password': 'Password',
   'profile.password.current': 'Current password',
   'profile.password.new': 'New password',
   'profile.password.confirm': 'Confirm new password',
   'profile.password.submit': 'Change password',
-  'profile.password.saving': 'Saving…',
   'profile.password.changed':
     'Password changed. You have been logged out on your other devices.',
   'profile.password.error.tooShort':

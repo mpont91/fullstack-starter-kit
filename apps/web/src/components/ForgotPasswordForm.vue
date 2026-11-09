@@ -4,7 +4,9 @@ import { Mail } from 'lucide-vue-next'
 import { provideLanguage, useLocalizePath, useTranslations } from '../i18n/vue'
 import { defaultLanguage, type Language } from '../i18n'
 import { requestPasswordReset } from '../services/auth.service'
-import { ApiError } from '../services/api-client'
+import { errorMessage } from '../helpers/error-helper'
+import { useSubmit } from '../composables/use-submit'
+import Alert from './ui/Alert.vue'
 import Button from './ui/Button.vue'
 import FormField from './ui/FormField.vue'
 import TextInput from './ui/TextInput.vue'
@@ -22,28 +24,25 @@ const t = useTranslations(lang)
 const path = useLocalizePath(lang)
 
 const email = ref('')
-const error = ref('')
-const submitting = ref(false)
 const sent = ref(false)
 
-async function handleSubmit() {
-  error.value = ''
-  submitting.value = true
-  try {
+const submit = useSubmit(
+  async () => {
     await requestPasswordReset(email.value)
     // The API answers the same way whether or not the email exists, so the
     // UI must too — showing a different message here would defeat the point.
     sent.value = true
-  } catch (e) {
+  },
+  {
     // 429 is the rate limit, the same for any address, so naming it gives
     // nothing away about which accounts exist.
-    const tooMany = e instanceof ApiError && e.status === 429
-    error.value = tooMany
-      ? t('email.error.tooMany')
-      : t('forgotPassword.serverError')
-    submitting.value = false
-  }
-}
+    errorMessage: (e) =>
+      errorMessage(e, {
+        server: t('forgotPassword.serverError'),
+        byStatus: { 429: t('email.error.tooMany') },
+      }),
+  },
+)
 </script>
 
 <template>
@@ -59,7 +58,7 @@ async function handleSubmit() {
       {{ t('forgotPassword.success') }}
     </p>
 
-    <form v-else class="mt-7 space-y-4" @submit.prevent="handleSubmit">
+    <form v-else class="mt-7 space-y-4" @submit.prevent="submit.run()">
       <FormField :label="t('forgotPassword.email')">
         <TextInput
           v-model="email"
@@ -70,15 +69,11 @@ async function handleSubmit() {
         />
       </FormField>
 
-      <p v-if="error" class="text-sm text-danger-400">{{ error }}</p>
+      <Alert v-if="submit.error">{{ submit.error }}</Alert>
 
-      <Button type="submit" :disabled="submitting" class="w-full">
+      <Button type="submit" :loading="submit.isBusy" class="w-full">
         <Mail class="size-4" />
-        {{
-          submitting
-            ? t('forgotPassword.submitting')
-            : t('forgotPassword.submit')
-        }}
+        {{ t('forgotPassword.submit') }}
       </Button>
     </form>
 

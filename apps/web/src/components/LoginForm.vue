@@ -4,9 +4,12 @@ import { LogIn } from 'lucide-vue-next'
 import { provideLanguage, useLocalizePath, useTranslations } from '../i18n/vue'
 import { defaultLanguage, type Language } from '../i18n'
 import { login } from '../services/auth.service'
-import { ApiError } from '../services/api-client'
+import { ApiError } from '../services/api-error'
+import { errorMessage } from '../helpers/error-helper'
+import { useSubmit } from '../composables/use-submit'
 import { siteLanguageFromApi } from '../helpers/locale-helper'
 import { afterLoginPath } from '../helpers/redirect-helper'
+import Alert from './ui/Alert.vue'
 import Button from './ui/Button.vue'
 import FormField from './ui/FormField.vue'
 import TextInput from './ui/TextInput.vue'
@@ -27,16 +30,12 @@ const path = useLocalizePath(lang)
 
 const email = ref('')
 const password = ref('')
-const error = ref('')
-const submitting = ref(false)
 // The email that logged in with the right password but was never confirmed.
 const unverifiedEmail = ref('')
 
-async function handleSubmit() {
-  error.value = ''
-  unverifiedEmail.value = ''
-  submitting.value = true
-  try {
+const submit = useSubmit(
+  async () => {
+    unverifiedEmail.value = ''
     const user = await login(email.value, password.value)
     window.location.assign(
       afterLoginPath(
@@ -45,24 +44,27 @@ async function handleSubmit() {
         siteLanguageFromApi(user.language),
       ),
     )
-  } catch (e) {
+  },
+  {
+    navigates: true,
     // 403 is the right password on an unconfirmed account, where resending
     // the link helps; 429 is the rate limit; any other 4xx is a credential
-    // rejection; a 5xx or network failure is on us, not on the user.
-    const status = e instanceof ApiError ? e.status : 0
-    if (status === 403) {
-      unverifiedEmail.value = email.value
-      error.value = t('login.error.notVerified')
-    } else if (status === 429) {
-      error.value = t('login.error.tooMany')
-    } else if (status >= 400 && status < 500) {
-      error.value = t('login.error')
-    } else {
-      error.value = t('login.serverError')
-    }
-    submitting.value = false
-  }
-}
+    // rejection.
+    errorMessage: (e) => {
+      if (e instanceof ApiError && e.status === 403) {
+        unverifiedEmail.value = email.value
+      }
+      return errorMessage(e, {
+        server: t('login.serverError'),
+        rejected: t('login.error'),
+        byStatus: {
+          403: t('login.error.notVerified'),
+          429: t('login.error.tooMany'),
+        },
+      })
+    },
+  },
+)
 </script>
 
 <template>
@@ -80,7 +82,7 @@ async function handleSubmit() {
       <span class="h-px flex-1 bg-border" />
     </div>
 
-    <form class="space-y-4" @submit.prevent="handleSubmit">
+    <form class="space-y-4" @submit.prevent="submit.run()">
       <FormField :label="t('login.email')">
         <TextInput
           v-model="email"
@@ -109,12 +111,12 @@ async function handleSubmit() {
         />
       </FormField>
 
-      <p v-if="error" class="text-sm text-danger-400">{{ error }}</p>
+      <Alert v-if="submit.error">{{ submit.error }}</Alert>
       <ResendVerification v-if="unverifiedEmail" :email="unverifiedEmail" />
 
-      <Button type="submit" :disabled="submitting" class="w-full">
+      <Button type="submit" :loading="submit.isBusy" class="w-full">
         <LogIn class="size-4" />
-        {{ submitting ? t('login.submitting') : t('login.submit') }}
+        {{ t('login.submit') }}
       </Button>
     </form>
 

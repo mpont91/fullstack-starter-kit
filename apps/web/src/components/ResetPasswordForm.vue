@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { PASSWORD_MIN_LENGTH } from '@app/shared'
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import { KeyRound } from 'lucide-vue-next'
 import { provideLanguage, useLocalizePath, useTranslations } from '../i18n/vue'
 import { defaultLanguage, type Language } from '../i18n'
 import { getPasswordResetEmail, resetPassword } from '../services/auth.service'
-import { ApiError } from '../services/api-client'
+import { errorMessage, InvalidInput } from '../helpers/error-helper'
+import { useAsync } from '../composables/use-async'
+import { useSubmit } from '../composables/use-submit'
 import { APP_HOME } from '../helpers/app-path-helper'
+import Alert from './ui/Alert.vue'
+import AsyncView from './ui/AsyncView.vue'
 import Button from './ui/Button.vue'
 import FormField from './ui/FormField.vue'
 import TextInput from './ui/TextInput.vue'
@@ -24,63 +28,44 @@ provideLanguage(lang)
 const t = useTranslations(lang)
 const path = useLocalizePath(lang)
 
-const token = ref('')
-const email = ref('')
-const loadingEmail = ref(true)
+// Read on mount: the page is rendered on the server too, with no URL to read.
+let token = ''
 const password = ref('')
 const confirmPassword = ref('')
-const error = ref('')
-const submitting = ref(false)
 
-onMounted(async () => {
-  token.value = new URLSearchParams(window.location.search).get('token') ?? ''
-  if (!token.value) {
-    error.value = t('resetPassword.error.invalidToken')
-    loadingEmail.value = false
-    return
-  }
-
-  try {
-    email.value = await getPasswordResetEmail(token.value)
-  } catch (e) {
-    // Same failure as a bad token at submit time: invalid, expired or
-    // already used. Fold it into the existing invalid-link screen rather
-    // than showing a form that would only fail again on submit.
-    error.value =
-      e instanceof ApiError && e.status === 400
-        ? t('resetPassword.error.invalidToken')
-        : t('resetPassword.serverError')
-    token.value = ''
-  } finally {
-    loadingEmail.value = false
-  }
+// A 400 is the token being invalid, expired or already used: the only 4xx
+// these endpoints return. Anything else is on us.
+const tokenErrors = () => ({
+  server: t('resetPassword.serverError'),
+  byStatus: { 400: t('resetPassword.error.invalidToken') },
 })
 
-async function handleSubmit() {
-  if (password.value.length < PASSWORD_MIN_LENGTH) {
-    error.value = t('resetPassword.error.passwordTooShort')
-    return
-  }
-  if (password.value !== confirmPassword.value) {
-    error.value = t('resetPassword.error.passwordMismatch')
-    return
-  }
+// The email the link is for. A link that fails here gets the invalid-link
+// screen rather than a form that would only fail again on submit.
+const account = useAsync(
+  () => {
+    token = new URLSearchParams(window.location.search).get('token') ?? ''
+    if (!token) {
+      throw new InvalidInput(t('resetPassword.error.invalidToken'))
+    }
+    return getPasswordResetEmail(token)
+  },
+  { initial: '', errorMessage: (e) => errorMessage(e, tokenErrors()) },
+)
 
-  error.value = ''
-  submitting.value = true
-  try {
-    await resetPassword(token.value, password.value)
+const submit = useSubmit(
+  async () => {
+    if (password.value.length < PASSWORD_MIN_LENGTH) {
+      throw new InvalidInput(t('resetPassword.error.passwordTooShort'))
+    }
+    if (password.value !== confirmPassword.value) {
+      throw new InvalidInput(t('resetPassword.error.passwordMismatch'))
+    }
+    await resetPassword(token, password.value)
     window.location.assign(path(APP_HOME))
-  } catch (e) {
-    // A 400 here specifically means the token is invalid/expired/used — the
-    // only 4xx this endpoint returns. Anything else is on us.
-    error.value =
-      e instanceof ApiError && e.status === 400
-        ? t('resetPassword.error.invalidToken')
-        : t('resetPassword.serverError')
-    submitting.value = false
-  }
-}
+  },
+  { navigates: true, errorMessage: (e) => errorMessage(e, tokenErrors()) },
+)
 </script>
 
 <template>
@@ -92,64 +77,61 @@ async function handleSubmit() {
       <p class="mt-1 text-sm text-muted">{{ t('resetPassword.subtitle') }}</p>
     </div>
 
-    <div v-if="loadingEmail" class="loading-late mt-7 space-y-4">
-      <div v-for="field in 3" :key="field" class="grid gap-1.5">
-        <Skeleton class="h-4 w-32" />
-        <Skeleton class="h-10 w-full rounded-lg" />
-      </div>
-      <Skeleton class="h-10 w-full rounded-lg" />
+    <div class="mt-7">
+      <AsyncView :state="account">
+        <template #loading>
+          <div class="space-y-4">
+            <div v-for="field in 3" :key="field" class="grid gap-1.5">
+              <Skeleton class="h-4 w-32" />
+              <Skeleton class="h-10 w-full rounded-lg" />
+            </div>
+            <Skeleton class="h-10 w-full rounded-lg" />
+          </div>
+        </template>
+
+        <form class="space-y-4" @submit.prevent="submit.run()">
+          <FormField :label="t('resetPassword.email')">
+            <TextInput :model-value="account.data" type="email" disabled />
+          </FormField>
+
+          <FormField :label="t('resetPassword.password')">
+            <TextInput
+              v-model="password"
+              type="password"
+              autocomplete="new-password"
+              required
+              :minlength="PASSWORD_MIN_LENGTH"
+              :placeholder="t('resetPassword.password.placeholder')"
+            />
+          </FormField>
+
+          <FormField :label="t('resetPassword.confirmPassword')">
+            <TextInput
+              v-model="confirmPassword"
+              type="password"
+              autocomplete="new-password"
+              required
+              :placeholder="t('resetPassword.confirmPassword.placeholder')"
+            />
+          </FormField>
+
+          <Alert v-if="submit.error">{{ submit.error }}</Alert>
+
+          <Button type="submit" :loading="submit.isBusy" class="w-full">
+            <KeyRound class="size-4" />
+            {{ t('resetPassword.submit') }}
+          </Button>
+        </form>
+      </AsyncView>
     </div>
 
-    <form
-      v-else-if="token"
-      class="mt-7 space-y-4"
-      @submit.prevent="handleSubmit"
-    >
-      <FormField :label="t('resetPassword.email')">
-        <TextInput v-model="email" type="email" disabled />
-      </FormField>
-
-      <FormField :label="t('resetPassword.password')">
-        <TextInput
-          v-model="password"
-          type="password"
-          autocomplete="new-password"
-          required
-          :minlength="PASSWORD_MIN_LENGTH"
-          :placeholder="t('resetPassword.password.placeholder')"
-        />
-      </FormField>
-
-      <FormField :label="t('resetPassword.confirmPassword')">
-        <TextInput
-          v-model="confirmPassword"
-          type="password"
-          autocomplete="new-password"
-          required
-          :placeholder="t('resetPassword.confirmPassword.placeholder')"
-        />
-      </FormField>
-
-      <p v-if="error" class="text-sm text-danger-400">{{ error }}</p>
-
-      <Button type="submit" :disabled="submitting" class="w-full">
-        <KeyRound class="size-4" />
-        {{
-          submitting ? t('resetPassword.submitting') : t('resetPassword.submit')
-        }}
-      </Button>
-    </form>
-
-    <template v-else>
-      <p class="mt-7 text-center text-sm text-danger-400">{{ error }}</p>
-      <p class="mt-6 text-center text-sm text-muted">
-        <a
-          :href="path('/forgot-password')"
-          class="font-medium text-primary-400 hover:text-primary-300"
-        >
-          {{ t('resetPassword.requestNewLink') }}
-        </a>
-      </p>
-    </template>
+    <p v-if="account.error" class="mt-6 text-center text-sm text-muted">
+      <a
+        :href="path('/forgot-password')"
+        class="font-medium text-primary-400 hover:text-primary-300"
+      >
+        {{ t('resetPassword.requestNewLink') }}
+      </a>
+    </p>
   </Card>
 </template>

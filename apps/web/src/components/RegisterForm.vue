@@ -5,7 +5,9 @@ import { MailCheck, UserPlus } from 'lucide-vue-next'
 import { provideLanguage, useLocalizePath, useTranslations } from '../i18n/vue'
 import { defaultLanguage, type Language } from '../i18n'
 import { register } from '../services/auth.service'
-import { ApiError } from '../services/api-client'
+import { errorMessage, InvalidInput } from '../helpers/error-helper'
+import { useSubmit } from '../composables/use-submit'
+import Alert from './ui/Alert.vue'
 import Button from './ui/Button.vue'
 import FormField from './ui/FormField.vue'
 import TextInput from './ui/TextInput.vue'
@@ -27,41 +29,32 @@ const path = useLocalizePath(lang)
 const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
-const error = ref('')
-const submitting = ref(false)
 // Set once the account exists: the form gives way to "check your inbox".
 const sentTo = ref('')
 
-async function handleSubmit() {
-  if (password.value.length < PASSWORD_MIN_LENGTH) {
-    error.value = t('register.error.passwordTooShort')
-    return
-  }
-  if (password.value !== confirmPassword.value) {
-    error.value = t('register.error.passwordMismatch')
-    return
-  }
-
-  error.value = ''
-  submitting.value = true
-  try {
-    sentTo.value = await register(email.value, password.value, lang)
-  } catch (e) {
-    // 409 and 429 have precise causes worth naming. Other 4xx means the
-    // payload was refused; 5xx or a network failure is on us.
-    const status = e instanceof ApiError ? e.status : 0
-    if (status === 429) {
-      error.value = t('register.error.tooMany')
-    } else if (status === 409) {
-      error.value = t('register.error.emailTaken')
-    } else if (status >= 400 && status < 500) {
-      error.value = t('register.error.invalid')
-    } else {
-      error.value = t('register.serverError')
+const submit = useSubmit(
+  async () => {
+    if (password.value.length < PASSWORD_MIN_LENGTH) {
+      throw new InvalidInput(t('register.error.passwordTooShort'))
     }
-    submitting.value = false
-  }
-}
+    if (password.value !== confirmPassword.value) {
+      throw new InvalidInput(t('register.error.passwordMismatch'))
+    }
+    sentTo.value = await register(email.value, password.value, lang)
+  },
+  {
+    // 409 and 429 have precise causes worth naming.
+    errorMessage: (e) =>
+      errorMessage(e, {
+        server: t('register.serverError'),
+        rejected: t('register.error.invalid'),
+        byStatus: {
+          409: t('register.error.emailTaken'),
+          429: t('register.error.tooMany'),
+        },
+      }),
+  },
+)
 </script>
 
 <template>
@@ -94,7 +87,7 @@ async function handleSubmit() {
       <span class="h-px flex-1 bg-border" />
     </div>
 
-    <form class="space-y-4" @submit.prevent="handleSubmit">
+    <form class="space-y-4" @submit.prevent="submit.run()">
       <FormField :label="t('register.email')">
         <TextInput
           v-model="email"
@@ -126,11 +119,11 @@ async function handleSubmit() {
         />
       </FormField>
 
-      <p v-if="error" class="text-sm text-danger-400">{{ error }}</p>
+      <Alert v-if="submit.error">{{ submit.error }}</Alert>
 
-      <Button type="submit" :disabled="submitting" class="w-full">
+      <Button type="submit" :loading="submit.isBusy" class="w-full">
         <UserPlus class="size-4" />
-        {{ submitting ? t('register.submitting') : t('register.submit') }}
+        {{ t('register.submit') }}
       </Button>
     </form>
 

@@ -3,9 +3,10 @@ import { onMounted, ref } from 'vue'
 import { provideLanguage, useLocalizePath, useTranslations } from '../i18n/vue'
 import { defaultLanguage, type Language } from '../i18n'
 import { verifyEmail } from '../services/auth.service'
-import { ApiError } from '../services/api-client'
+import { errorMessage } from '../helpers/error-helper'
 import { localizePath, siteLanguageFromApi } from '../helpers/locale-helper'
 import { APP_HOME } from '../helpers/app-path-helper'
+import Alert from './ui/Alert.vue'
 import Card from './ui/Card.vue'
 import Skeleton from './ui/Skeleton.vue'
 
@@ -39,10 +40,10 @@ onMounted(async () => {
     // 400 is the only rejection: invalid, expired or already used. A link
     // that was already used most likely means the account is confirmed, so
     // the way out is the login page either way.
-    error.value =
-      e instanceof ApiError && e.status === 400
-        ? t('verify.error.invalid')
-        : t('verify.serverError')
+    error.value = errorMessage(e, {
+      server: t('verify.serverError'),
+      byStatus: { 400: t('verify.error.invalid') },
+    })
   }
 })
 </script>
@@ -56,7 +57,7 @@ onMounted(async () => {
       <span class="sr-only">{{ t('verify.checking') }}</span>
     </div>
     <template v-else>
-      <p class="text-sm text-danger-400">{{ error }}</p>
+      <Alert>{{ error }}</Alert>
       <a
         :href="path('/login')"
         class="inline-block text-sm font-medium text-primary-400 hover:text-primary-300"

@@ -13,12 +13,14 @@ import {
   requestPasswordReset,
   updateLanguage,
 } from '../services/auth.service'
-import { ApiError } from '../services/api-client'
+import { errorMessage, InvalidInput } from '../helpers/error-helper'
+import { useSubmit } from '../composables/use-submit'
 import {
   localizePath,
   pathWithoutLanguage,
   siteLanguageFromApi,
 } from '../helpers/locale-helper'
+import Alert from './ui/Alert.vue'
 import Button from './ui/Button.vue'
 import FormField from './ui/FormField.vue'
 import TextInput from './ui/TextInput.vue'
@@ -60,134 +62,127 @@ const memberSince = user.value
     )
   : ''
 
-const loggingOut = ref(false)
+const server = (e: unknown) =>
+  errorMessage(e, { server: t('profile.serverError') })
 
-async function handleLogout() {
-  if (loggingOut.value) return
-  loggingOut.value = true
-  await logout()
-  window.location.assign(path('/'))
-}
+const logoutAction = useSubmit(
+  async () => {
+    await logout()
+    window.location.assign(path('/'))
+  },
+  { navigates: true, errorMessage: server },
+)
 
 const currentPassword = ref('')
 const newPassword = ref('')
 const confirmNewPassword = ref('')
-const changingPassword = ref(false)
-const passwordError = ref('')
 const passwordChanged = ref(false)
 
-async function handleChangePassword() {
-  if (changingPassword.value) return
-  passwordError.value = ''
-  passwordChanged.value = false
-  if (newPassword.value.length < PASSWORD_MIN_LENGTH) {
-    passwordError.value = t('profile.password.error.tooShort', {
-      min: PASSWORD_MIN_LENGTH,
-    })
-    return
-  }
-  if (newPassword.value !== confirmNewPassword.value) {
-    passwordError.value = t('profile.password.error.mismatch')
-    return
-  }
-  changingPassword.value = true
-  try {
+const passwordChange = useSubmit(
+  async () => {
+    passwordChanged.value = false
+    if (newPassword.value.length < PASSWORD_MIN_LENGTH) {
+      throw new InvalidInput(
+        t('profile.password.error.tooShort', { min: PASSWORD_MIN_LENGTH }),
+      )
+    }
+    if (newPassword.value !== confirmNewPassword.value) {
+      throw new InvalidInput(t('profile.password.error.mismatch'))
+    }
     await changePassword(currentPassword.value, newPassword.value)
     currentPassword.value = ''
     newPassword.value = ''
     confirmNewPassword.value = ''
     passwordChanged.value = true
-  } catch (e) {
+  },
+  {
     // Same split as deleting the account: 403 is a wrong current password,
     // anything else is on us.
-    passwordError.value =
-      e instanceof ApiError && e.status === 403
-        ? t('profile.password.error.current')
-        : t('profile.password.serverError')
-  } finally {
-    changingPassword.value = false
-  }
-}
+    errorMessage: (e) =>
+      errorMessage(e, {
+        server: t('profile.password.serverError'),
+        byStatus: { 403: t('profile.password.error.current') },
+      }),
+  },
+)
 
-const sendingPasswordLink = ref(false)
 const passwordLinkSent = ref(false)
-const passwordLinkError = ref('')
 
 // Setting a first password goes through the forgotten-password email, which
 // is what proves the inbox is theirs; once it's set, both ways in work.
-async function handleSendPasswordLink() {
-  if (sendingPasswordLink.value || !user.value) return
-  sendingPasswordLink.value = true
-  passwordLinkError.value = ''
-  try {
+const passwordLink = useSubmit(
+  async () => {
+    if (!user.value) return
     await requestPasswordReset(user.value.email)
     passwordLinkSent.value = true
-  } catch (e) {
-    const tooMany = e instanceof ApiError && e.status === 429
-    passwordLinkError.value = tooMany
-      ? t('email.error.tooMany')
-      : t('profile.password.linkError')
-  } finally {
-    sendingPasswordLink.value = false
-  }
-}
+  },
+  {
+    errorMessage: (e) =>
+      errorMessage(e, {
+        server: t('profile.password.linkError'),
+        byStatus: { 429: t('email.error.tooMany') },
+      }),
+  },
+)
 
 const deleteOpen = ref(false)
 const deletePassword = ref('')
-const deleting = ref(false)
-const deleteError = ref('')
+
+type Confirmation = { password: string } | { googleCredential: string }
+
+// 403 is the only answer that means the confirmation was wrong (the
+// password, or a Google account that isn't this one); anything else leaves
+// the account in place and is ours to own.
+const deletion = useSubmit(
+  async (confirmation: Confirmation) => {
+    await deleteAccount(confirmation)
+    window.location.assign(path('/'))
+  },
+  {
+    navigates: true,
+    errorMessage: (e, confirmation) =>
+      errorMessage(e, {
+        server: t('profile.delete.serverError'),
+        byStatus: {
+          403:
+            'password' in confirmation
+              ? t('profile.delete.error.password')
+              : t('profile.delete.error.google'),
+        },
+      }),
+  },
+)
 
 function openDelete() {
   deletePassword.value = ''
-  deleteError.value = ''
+  deletion.error = ''
   deleteOpen.value = true
 }
 
-async function handleDelete() {
-  if (deleting.value || !deletePassword.value) return
-  await confirmDelete({ password: deletePassword.value })
-}
-
-async function confirmDelete(
-  confirmation: { password: string } | { googleCredential: string },
-) {
-  deleting.value = true
-  deleteError.value = ''
-  try {
-    await deleteAccount(confirmation)
-    window.location.assign(path('/'))
-  } catch (e) {
-    // 403 is the only answer that means the confirmation was wrong (the
-    // password, or a Google account that isn't this one); anything else
-    // leaves the account in place and is ours to own.
-    deleteError.value =
-      e instanceof ApiError && e.status === 403
-        ? 'password' in confirmation
-          ? t('profile.delete.error.password')
-          : t('profile.delete.error.google')
-        : t('profile.delete.serverError')
-    deleting.value = false
+function handleDelete() {
+  if (deletePassword.value) {
+    void deletion.run({ password: deletePassword.value })
   }
 }
 
 const currentLanguage = computed<Language>(() =>
   user.value ? siteLanguageFromApi(user.value.language) : lang,
 )
-const changingLanguage = ref(false)
 
 // Changing it here is the same field the Navbar edits — updating it navigates
 // to the equivalent page under the new language, same as picking it there.
-async function handleLanguageChange(code: Language) {
-  if (code === currentLanguage.value || changingLanguage.value) return
-  changingLanguage.value = true
-  try {
+const languageChange = useSubmit(
+  async (code: Language) => {
     await updateLanguage(code)
     window.location.assign(
       localizePath(pathWithoutLanguage(window.location.pathname), code),
     )
-  } catch {
-    changingLanguage.value = false
-  }
+  },
+  { navigates: true, errorMessage: server },
+)
+
+function handleLanguageChange(code: Language) {
+  if (code !== currentLanguage.value) void languageChange.run(code)
 }
 </script>
 
@@ -228,7 +223,7 @@ async function handleLanguageChange(code: Language) {
               v-for="code in Object.keys(languages) as Language[]"
               :key="code"
               type="button"
-              :disabled="changingLanguage"
+              :disabled="languageChange.isBusy"
               :aria-current="code === currentLanguage ? 'true' : undefined"
               class="rounded-md px-2.5 py-1 text-sm font-medium transition-colors disabled:opacity-50"
               :class="
@@ -243,6 +238,9 @@ async function handleLanguageChange(code: Language) {
           </dd>
         </div>
       </dl>
+      <Alert v-if="languageChange.error" class="px-6 pb-4">
+        {{ languageChange.error }}
+      </Alert>
     </Card>
 
     <Card as="section" class="space-y-4">
@@ -251,22 +249,21 @@ async function handleLanguageChange(code: Language) {
       </h2>
       <div v-if="!hasPassword" class="space-y-4">
         <p class="text-sm text-muted">{{ t('profile.password.none') }}</p>
-        <p v-if="passwordLinkError" class="text-sm text-danger-400">
-          {{ passwordLinkError }}
-        </p>
-        <p v-else-if="passwordLinkSent" class="text-sm text-success-400">
+        <Alert v-if="passwordLink.error">{{ passwordLink.error }}</Alert>
+        <Alert v-else-if="passwordLinkSent" tone="success">
           {{ t('profile.password.linkSent', { email: user?.email ?? '' }) }}
-        </p>
+        </Alert>
         <Button
           size="small"
-          :disabled="sendingPasswordLink || passwordLinkSent"
-          @click="handleSendPasswordLink"
+          :loading="passwordLink.isBusy"
+          :disabled="passwordLinkSent"
+          @click="passwordLink.run()"
         >
           <Mail class="size-4" />
           {{ t('profile.password.sendLink') }}
         </Button>
       </div>
-      <form v-else class="space-y-4" @submit.prevent="handleChangePassword">
+      <form v-else class="space-y-4" @submit.prevent="passwordChange.run()">
         <FormField :label="t('profile.password.current')">
           <TextInput
             v-model="currentPassword"
@@ -291,27 +288,28 @@ async function handleLanguageChange(code: Language) {
             required
           />
         </FormField>
-        <p v-if="passwordError" class="text-sm text-danger-400">
-          {{ passwordError }}
-        </p>
-        <p v-else-if="passwordChanged" class="text-sm text-success-400">
+        <Alert v-if="passwordChange.error">{{ passwordChange.error }}</Alert>
+        <Alert v-else-if="passwordChanged" tone="success">
           {{ t('profile.password.changed') }}
-        </p>
-        <Button type="submit" size="small" :disabled="changingPassword">
+        </Alert>
+        <Button type="submit" size="small" :loading="passwordChange.isBusy">
           <KeyRound class="size-4" />
-          {{
-            changingPassword
-              ? t('profile.password.saving')
-              : t('profile.password.submit')
-          }}
+          {{ t('profile.password.submit') }}
         </Button>
       </form>
     </Card>
 
-    <Button variant="secondary" :disabled="loggingOut" @click="handleLogout">
-      <LogOut class="size-4" />
-      {{ t('profile.logout') }}
-    </Button>
+    <div class="space-y-2">
+      <Button
+        variant="secondary"
+        :loading="logoutAction.isBusy"
+        @click="logoutAction.run()"
+      >
+        <LogOut class="size-4" />
+        {{ t('profile.logout') }}
+      </Button>
+      <Alert v-if="logoutAction.error">{{ logoutAction.error }}</Alert>
+    </div>
 
     <section class="space-y-3 border-t border-border pt-8">
       <h2 class="text-xs font-medium text-muted uppercase">
@@ -332,7 +330,7 @@ async function handleLanguageChange(code: Language) {
       :open="deleteOpen"
       :title="t('profile.delete.confirmTitle')"
       :confirm-label="t('profile.delete.confirm')"
-      :confirm-disabled="!hasPassword"
+      :confirm-disabled="!hasPassword || deletion.isBusy"
       @confirm="handleDelete"
       @cancel="deleteOpen = false"
     >
@@ -348,22 +346,23 @@ async function handleLanguageChange(code: Language) {
       <div v-if="!hasPassword" class="space-y-2 pt-2">
         <p class="text-foreground">{{ t('profile.delete.google') }}</p>
         <GoogleButton
-          v-if="!deleting"
-          @credential="confirmDelete({ googleCredential: $event })"
+          v-if="!deletion.isBusy"
+          @credential="deletion.run({ googleCredential: $event })"
         />
-        <p v-if="deleteError" class="text-sm text-danger-400">
-          {{ deleteError }}
-        </p>
+        <Alert v-if="deletion.error">{{ deletion.error }}</Alert>
       </div>
       <form v-else class="pt-2" @submit.prevent="handleDelete">
-        <FormField :label="t('profile.delete.password')" :error="deleteError">
+        <FormField
+          :label="t('profile.delete.password')"
+          :error="deletion.error || undefined"
+        >
           <TextInput
             v-model="deletePassword"
             type="password"
             tone="danger"
             autocomplete="current-password"
             required
-            :disabled="deleting"
+            :disabled="deletion.isBusy"
           />
         </FormField>
       </form>

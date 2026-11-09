@@ -75,6 +75,7 @@ src/services/          the ONLY place that talks to the API
 src/i18n/              every user-facing string
 src/legal/             privacy policy + terms, one Markdown file per language
 src/helpers/           pure formatting/derivation helpers (display only)
+src/composables/       useAsync (what a view loads), useSubmit (what it does)
 src/monitoring/        Sentry: init, the Vue error hook, what an event keeps
 src/constants.ts       contact email, Google's client id
 ```
@@ -156,15 +157,30 @@ must survive that window:
 
 **Error handling distinguishes _whose fault it is_.** A 4xx means the user's
 input was rejected; a 5xx or a network failure is our problem, and the message
-must say so. Follow the pattern in `LoginForm.vue` / `RegisterForm.vue`:
+must say so. `errorMessage` (`helpers/error-helper.ts`) decides it, and nothing
+else reads a status to pick a message:
 
 ```ts
-const rejected = e instanceof ApiError && e.status >= 400 && e.status < 500
-error.value = rejected ? t('login.error') : t('login.serverError')
+errorMessage(e, {
+  server: t('register.serverError'),
+  rejected: t('register.error.invalid'),
+  byStatus: { 409: t('register.error.emailTaken') },
+})
 ```
 
-Where a specific status has a precise meaning, name it: 409 = email taken, 403
-on login = email not confirmed yet, 429 = too many attempts.
+Where a specific status has a precise meaning, name it in `byStatus`: 409 =
+email taken, 403 on login = email not confirmed yet, 429 = too many attempts. A
+check the form makes before sending throws `InvalidInput` with its message.
+
+**What a view loads and what it does go through two composables.** A view's data
+comes from `useAsync(load, { initial, errorMessage })` and is shown through
+`<AsyncView :state :empty>`, with the skeletons in its `loading` slot and the
+empty state in its `empty` one. An action the user starts (a form, a button) is
+a `useSubmit(action, { errorMessage })`: `run()` starts it, `isBusy` goes to its
+button's `loading`, and `error` to an `Alert`. Neither is written by hand
+(`isLoading`, `try/finally`, a busy flag), so none of them can be left out. A
+message about what just happened, failed or done, is an `Alert` (`tone` danger,
+success or warning): a failure is announced at once to a screen reader.
 
 **No hardcoded user-facing strings.** Everything goes through
 `useTranslations()`, keyed `area.thing` (`login.title`,
@@ -201,24 +217,25 @@ inline, takes an `aria-label`. No `<input>`, `<select>` or `<label>` outside
 is a bottom margin, and a label is inline, so the browser dropped it.)
 
 **Reuse `src/components/ui/` primitives.** `Button`, `Card`, `Badge`,
-`ConfirmDialog`, `Skeleton`, `EmptyState`, and the form ones above. They merge
-classes via `cn()` (clsx + tailwind-merge), so passing `class` from the outside
-overrides cleanly — extend a primitive rather than hand-rolling a styled
-`<button>`.
+`ConfirmDialog`, `Alert`, `AsyncView`, `Skeleton`, `EmptyState`, and the form
+ones above. They merge classes via `cn()` (clsx + tailwind-merge), so passing
+`class` from the outside overrides cleanly — extend a primitive rather than
+hand-rolling a styled `<button>`.
 
 **Loading and empty states.** Anything that loads shows `Skeleton`s shaped like
 the content it waits for (same rows, same sizes), never a "Loading…" line or a
-blank space; a busy label on a button is for actions, not loads. Every loading
-block carries `loading-late` (in `global.css`), so its skeletons wait 400 ms
-before showing and then fade in: a load that comes back at once doesn't flash
-them. A view with no data shows `EmptyState`: a large icon, a short title, a
-hint of what to do and, when there is one, the action as a button; `compact`
-inside a section of a page.
+blank space. An action under way shows on its button (`loading`: a spinner in
+place of its content, keeping its width), not in a label. `AsyncView` wraps the
+skeletons in `loading-late` (in `global.css`), so they wait 400 ms before
+showing and then fade in: a load that comes back at once doesn't flash them. A
+view with no data shows `EmptyState`: a large icon, a short title, a hint of
+what to do and, when there is one, the action as a button; `compact` inside a
+section of a page.
 
 **Vue style.** `<script setup lang="ts">` always. `ref` for state, `computed`
-for derivation, `onMounted` for the initial fetch. Load state is the explicit
-`isLoading` / `loadError` pair — see `AppHome.vue`. Props via
-`defineProps<Props>()` with an `interface Props` and destructured defaults.
+for derivation, `useAsync` for the initial fetch (see above; `AppHome.vue` is
+the simplest example). Props via `defineProps<Props>()` with an
+`interface Props` and destructured defaults.
 
 **Style.** Prettier: no semicolons, single quotes, `prettier-plugin-astro`.
 Named exports from `.ts` modules. Unlike the backend, this app consistently uses
@@ -314,11 +331,11 @@ that the page behaves.
 ### Tests
 
 Node's `node:test` through `tsx`, like the rest of the repo. `tests/` covers
-`src/helpers/` and `src/monitoring/scrub-event.ts`: everything with logic lives
-in a `.ts` module so it can be tested without a browser, and a component only
-wires it to the template. A value the user reads and could get wrong (a
-formatted amount, a derived label) always has a test. Components themselves have
-no automated tests; they're verified in the browser.
+`src/helpers/`, `src/composables/` and `src/monitoring/scrub-event.ts`:
+everything with logic lives in a `.ts` module so it can be tested without a
+browser, and a component only wires it to the template. A value the user reads
+and could get wrong (a formatted amount, a derived label) always has a test.
+Components themselves have no automated tests; they're verified in the browser.
 
 ## Monitoring
 

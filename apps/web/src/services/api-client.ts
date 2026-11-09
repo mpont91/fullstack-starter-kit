@@ -1,4 +1,5 @@
 import type { ZodType } from 'zod'
+import { ApiError } from './api-error'
 import { clearSession, getToken } from './session'
 import { languageFromPath, localizePath } from '../helpers/locale-helper'
 
@@ -15,16 +16,7 @@ function redirectToLogin(): void {
   location.replace(`${login}?redirect=${redirect}`)
 }
 
-export class ApiError extends Error {
-  constructor(
-    readonly status: number,
-    message: string,
-    readonly details?: unknown,
-  ) {
-    super(message)
-    this.name = 'ApiError'
-  }
-}
+export { ApiError }
 
 interface RequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'

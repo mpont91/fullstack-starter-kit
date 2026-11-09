@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, useAttrs } from 'vue'
+import { LoaderCircle } from 'lucide-vue-next'
 import type { ClassValue } from 'clsx'
 import { cn } from '../../helpers/cn-helper'
 
@@ -10,6 +11,10 @@ interface Props {
   size?: 'small' | 'medium'
   type?: 'button' | 'submit' | 'reset'
   href?: string
+  disabled?: boolean
+  // An action under way: it can't be pressed again, and a spinner stands in
+  // for its content, keeping its width.
+  loading?: boolean
 }
 
 const {
@@ -17,6 +22,8 @@ const {
   size = 'medium',
   type = 'button',
   href = undefined,
+  disabled = false,
+  loading = false,
 } = defineProps<Props>()
 
 const variantClasses: Record<NonNullable<Props['variant']>, string> = {
@@ -35,7 +42,7 @@ const attributes = useAttrs()
 
 const buttonClasses = computed(() =>
   cn(
-    'inline-flex items-center justify-center font-semibold transition disabled:cursor-not-allowed disabled:opacity-40',
+    'relative inline-flex items-center justify-center font-semibold transition disabled:cursor-not-allowed disabled:opacity-40',
     variantClasses[variant],
     sizeClasses[size],
     attributes.class as ClassValue,
@@ -55,8 +62,15 @@ const forwardedAttributes = computed(() => {
     v-bind="forwardedAttributes"
     :href="href"
     :type="href ? undefined : type"
+    :disabled="href ? undefined : disabled || loading"
+    :aria-busy="loading || undefined"
     :class="buttonClasses"
   >
-    <slot />
+    <span class="contents" :class="{ invisible: loading }"><slot /></span>
+    <LoaderCircle
+      v-if="loading"
+      class="absolute inset-0 m-auto size-4 animate-spin"
+      aria-hidden="true"
+    />
   </component>
 </template>
