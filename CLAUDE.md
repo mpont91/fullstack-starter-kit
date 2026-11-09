@@ -84,6 +84,10 @@ A bug or gap found while using the product goes into the current phase's spec,
 under "Found in use", as a new criterion, before it's fixed. That keeps the spec
 the full record of what the phase did.
 
+The public site (what a guest sees) shows the product `docs/VISION.md`
+describes, and changes with it in the same change. It presents the product as
+it's meant to be: no "coming soon", nothing from the roadmap.
+
 ## The API contract lives in one place
 
 `packages/shared` holds the Zod schemas for everything that crosses HTTP:
@@ -136,6 +140,9 @@ its own targets; the root runs any of them with a prefix — `make api/<target>`
 After changing `packages/shared`, `make shared/build`; `make dev` and the web
 build do it for you. See each app's `CLAUDE.md` for its targets.
 
+Makefiles stay simple: the commands used day to day, named so they read on their
+own, with no sections and no wordy comments.
+
 **`package.json` scripts exist only when something other than `make` calls
 them:** `build` in `apps/web` (Vercel runs it) and `build` in `packages/shared`
 (the web build and the API Docker image run it). Everything else is a `make`
@@ -176,6 +183,9 @@ machine.
 Short, imperative, capitalized subjects: "Reset passwords by email", "Delete
 accounts", "Refactor structure". No conventional-commit prefixes. One change per
 commit.
+
+Commits and PRs are the owner's: no `Co-Authored-By` trailer, no "Generated
+with" line, no mention of the assistant anywhere in them.
 
 A PR states: what changed, which apps and packages it touches, which spec
 criteria it checks off, how to reproduce (commands + expected output), any
@@ -222,12 +232,30 @@ tooling, auth, email, monitoring, deploy, backups, the conventions in the
     `gh api repos/mpont91/fullstack-starter-kit/contents/<path>` for a file, or
     `gh repo clone mpont91/fullstack-starter-kit` into a temporary directory.
 
+## Knowledge lives in the repo
+
+The documents above are the project's only memory. Work on it may come from
+another machine or a cloud session, where nothing exists but the repository, so
+whatever should outlive a conversation is written into them, in the same change:
+
+- What the product is and where it's going: `docs/VISION.md`, `docs/ROADMAP.md`
+  or the phase spec.
+- A technical decision and its reason: `docs/ARCHITECTURE.md`.
+- How the owner wants the work done: the `CLAUDE.md` it applies to; this one
+  when it's generic, and then it's a change for the template too.
+
+Never only in the assistant's own memory. When the owner says "remember this",
+it goes here.
+
 ## Working style
 
 - **Think first.** State assumptions; if two readings of a request differ
   materially, ask instead of picking silently.
 - **Simplest thing that works.** No speculative abstraction, no configurability
   nobody asked for, no error handling for impossible states.
+- **Don't reinvent the wheel.** When a library, the framework or the platform
+  already solves the problem, and it's what most people use for it, use it
+  rather than a hand-made solution.
 - **Surgical changes.** Match surrounding style even if you'd write it
   differently. Don't refactor adjacent code that isn't broken. Remove orphans
   _your_ change created; mention pre-existing dead code rather than deleting it.

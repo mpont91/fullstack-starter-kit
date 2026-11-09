@@ -383,6 +383,11 @@ Read env vars only in `src/settings.ts` and
 
 ## Deployment
 
+**The server needs only Docker** and the reverse proxy in front of it.
+Everything the project runs there (the API, its database, migrations, backups)
+runs in a container, so a clean server runs any project from the template within
+minutes. Nothing else is installed on it.
+
 `make deploy` SSHes to `$SERVER_SSH` and, in `$SERVER_PATH` (the monorepo root),
 runs `git pull`, then in `apps/api` migrates from the throwaway `migrate`
 container and runs `make build`. It touches production — only run it when
