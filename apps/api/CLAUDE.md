@@ -189,6 +189,10 @@ imports them; it never redeclares them.
 
 Errors reach the owner through Sentry (EU region), as the `ErrorReporter` port.
 
+The repo's `.mcp.json` connects the assistant to Sentry, to read issues and
+events while working. The organization holds every project of the owner's, so
+only this repo's projects are looked at or changed.
+
 - **What's reported:** every 500 (from `error-handler.ts`), a welcome email that
   can't be sent, and an uncaught exception that kills the process. Each report
   is tagged with `where` it failed. Other email failures already surface as
