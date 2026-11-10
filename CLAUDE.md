@@ -243,6 +243,31 @@ tooling, auth, email, monitoring, deploy, backups, the conventions in the
     `gh api repos/mpont91/fullstack-starter-kit/contents/<path>` for a file, or
     `gh repo clone mpont91/fullstack-starter-kit` into a temporary directory.
 
+## Aligned with the docs
+
+The owner and the assistant work from the same documents, so nothing the owner
+has decided depends on the assistant remembering it. The vision and the roadmap
+are short and loaded with this file, every session:
+
+- @docs/VISION.md
+- @docs/ROADMAP.md
+
+How the rest is kept in step:
+
+- **Read before answering.** Before answering about the product or starting a
+  change, read what applies: the current phase's spec and the part of
+  `docs/ARCHITECTURE.md` it touches. When a request contradicts them, say so
+  before acting.
+- **Point out what isn't written.** When the owner says something the docs don't
+  hold (a decision, a preference, a plan), say so and offer where it goes: "this
+  isn't in the docs; add it to X?".
+- **Every decision ends written.** When a task closes, say which document now
+  holds what was decided, or ask whether to write it down.
+- **The owner's words for them**, often in Spanish: "los docs" is `docs/`; "la
+  visión", "el roadmap", "la spec" (the current phase's) and "la arquitectura"
+  are its files; "las reglas" are the `CLAUDE.md` files; "apúntalo" means write
+  what was just decided where it belongs, in the same change.
+
 ## Knowledge lives in the repo
 
 The documents above are the project's only memory. Work on it may come from
