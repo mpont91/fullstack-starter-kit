@@ -278,6 +278,7 @@ Everything goes through this app's `Makefile`; from the repo root, prefix with
 | `make dev`                          | DB container up → migrate → `tsx watch`                                       |
 | `make check`                        | typecheck (the full gate, with prettier and eslint, is the root `make check`) |
 | `make test`                         | Create and migrate the test database, then run the tests                      |
+| `make e2e-server`                   | The API the end-to-end suite runs against; Playwright starts it               |
 | `make grant-admin` / `revoke-admin` | Give or take away the admin role: `make api/grant-admin EMAIL=…`              |
 | `make down` / `make logs`           | Stop the containers / follow their logs (dev or production)                   |
 | `make build`                        | Build and (re)start the production stack                                      |
@@ -333,6 +334,14 @@ another's fixtures mid-run. `resetDatabase` truncates every table it finds, so a
 new model needs nothing there. External services are always faked through their
 ports (`FakeEmailSender`, `FakeErrorReporter`, `FakeGoogleIdentityVerifier`);
 tests never hit the network.
+
+The end-to-end suite (`apps/e2e`) runs this app too: `tests/e2e/server.ts` is
+the API with those same fakes put into the `Container`, on `<POSTGRES_DB>_e2e`,
+emptied when it starts, with nothing on a schedule and stand-in keys for the
+faked services. It adds one route, `POST /e2e/accounts`, which creates a
+verified account for each test; what an account starts with in a product is set
+up there. A new outside service gets its fake there as well as in the
+integration tests.
 
 A calculation the product promises to get right (money, scores, anything a user
 checks against another source) is a pure function with **tests worked out by

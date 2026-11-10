@@ -28,7 +28,8 @@ them. When a request contradicts them, stop and ask.
 ├── docs/                 product and architecture documents
 ├── apps/
 │   ├── api/              backend — Express + Prisma, deployed to the VPS
-│   └── web/              frontend — Astro + Vue, deployed to Vercel
+│   ├── web/              frontend — Astro + Vue, deployed to Vercel
+│   └── e2e/              end-to-end tests — Playwright, over both
 └── packages/
     └── shared/           the API contract (Zod schemas) and brand
 ```
@@ -63,6 +64,9 @@ carry Vue, CSS or images. While there is one frontend, everything stays in
   every app that imports it gets the package's classes.
 - **Its own gate:** a `Makefile` with `check` (`vue-tsc --noEmit`) and `test`,
   run by the root `make check`; `eslint.config.mjs` gives it browser globals.
+- **One end-to-end suite for both:** `apps/e2e` starts each frontend as one more
+  `webServer` in `playwright.config.ts`, on its own port, and a Playwright
+  project per frontend points its `baseURL` there.
 - **After that, the rule holds both ways:** what only one frontend uses stays in
   that app, and moves to `packages/ui` when the second one needs it.
 
@@ -128,14 +132,15 @@ that's acceptable on a rename.
 its own targets; the root runs any of them with a prefix — `make api/<target>`,
 `make web/<target>`, `make shared/<target>` — so there's no need to `cd`.
 
-| Command        | What it does                                                                             |
-| -------------- | ---------------------------------------------------------------------------------------- |
-| `make install` | `npm ci` for all workspaces, build `packages/shared`, Prisma codegen                     |
-| `make dev`     | API (with its DB) and web together; Ctrl+C stops both                                    |
-| `make check`   | **The gate:** prettier + eslint over the repo, then each workspace's typecheck and tests |
-| `make test`    | Each workspace's tests                                                                   |
-| `make format`  | Autofix: prettier + eslint over the repo                                                 |
-| `make deploy`  | Deploy the API to the VPS (the web deploys on push, via Vercel)                          |
+| Command        | What it does                                                                               |
+| -------------- | ------------------------------------------------------------------------------------------ |
+| `make install` | `npm ci` for all workspaces, build `packages/shared`, Prisma codegen, Playwright's browser |
+| `make dev`     | API (with its DB) and web together; Ctrl+C stops both                                      |
+| `make check`   | **The gate:** prettier + eslint over the repo, then each workspace's typecheck and tests   |
+| `make test`    | Each workspace's tests                                                                     |
+| `make e2e`     | The end-to-end suite: the real API and the built web, in a browser (see `apps/e2e`)        |
+| `make format`  | Autofix: prettier + eslint over the repo                                                   |
+| `make deploy`  | Deploy the API to the VPS (the web deploys on push, via Vercel)                            |
 
 After changing `packages/shared`, `make shared/build`; `make dev` and the web
 build do it for you. See each app's `CLAUDE.md` for its targets.
@@ -154,7 +159,13 @@ workspace's `check` is only its typecheck. Tests are the opposite: each
 workspace has its own `test` target, because each needs its own setup (the API's
 integration tests need a database), and the root runs them all. Every workspace
 uses the same runner, Node's `node:test` through `tsx`, with files in
-`tests/**/*.test.ts`. New code comes with its tests.
+`tests/**/*.test.ts`, except `apps/e2e`, which uses Playwright's (see
+`docs/ARCHITECTURE.md`). New code comes with its tests.
+
+**Every journey a user takes has an end-to-end test** in `apps/e2e`: signing in,
+each page's main flow, each form. A change that adds or alters one adds or
+updates its test, and `make e2e` passes before it's committed. It runs outside
+`make check` only because it needs a database, a browser and about a minute.
 
 Lines stay within 80 characters (`.editorconfig`). Prettier enforces it for code
 and Markdown; elsewhere (Makefiles, Dockerfile, Compose) wrap by hand. Tables
@@ -259,6 +270,6 @@ it goes here.
 - **Surgical changes.** Match surrounding style even if you'd write it
   differently. Don't refactor adjacent code that isn't broken. Remove orphans
   _your_ change created; mention pre-existing dead code rather than deleting it.
-- **Verify, don't assume.** "Done" means the relevant `make check` passed and
-  the change was exercised for real. Report what you actually ran and what came
-  back.
+- **Verify, don't assume.** "Done" means the relevant `make check` passed, and
+  `make e2e` too when it touches what a user sees, and the change was exercised
+  for real. Report what you actually ran and what came back.

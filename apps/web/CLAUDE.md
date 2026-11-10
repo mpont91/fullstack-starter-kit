@@ -320,9 +320,12 @@ admin link only shows for `ADMIN`; `/admin/*` is checked by the API.
 "Done" means:
 
 1. `make check` passes.
-2. You loaded the affected page in a browser against a running API and exercised
+2. `make e2e` passes (from the root), and a journey the change adds or alters
+   has its test in `apps/e2e` (see its `CLAUDE.md`).
+3. You loaded the affected page in a browser against a running API and exercised
    the real flow — including the failure paths (invalid input, 401, 403, API
-   down), not just the happy one — in both languages when it shows text.
+   down), not just the happy one — in both languages when it shows text. A
+   Playwright script with a screenshot counts: look at the screenshot.
 
 Say what you actually ran and what you saw. Don't report UI as working on the
 strength of a green build: a passing `astro build` proves the types line up, not
@@ -335,7 +338,8 @@ Node's `node:test` through `tsx`, like the rest of the repo. `tests/` covers
 everything with logic lives in a `.ts` module so it can be tested without a
 browser, and a component only wires it to the template. A value the user reads
 and could get wrong (a formatted amount, a derived label) always has a test.
-Components themselves have no automated tests; they're verified in the browser.
+Components themselves have no unit tests; the end-to-end suite (`apps/e2e`)
+covers them, in a browser.
 
 ## Monitoring
 

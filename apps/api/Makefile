@@ -4,9 +4,11 @@ POSTGRES_PORT ?= 5432
 # The suite truncates between tests, so it gets its own database next to the
 # development one, never the development one itself.
 TEST_DATABASE_URL = postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@localhost:$(POSTGRES_PORT)/$(POSTGRES_DB)_test?schema=public
+# The end-to-end suite empties its own as well.
+E2E_DATABASE_URL = postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@localhost:$(POSTGRES_PORT)/$(POSTGRES_DB)_e2e?schema=public
 PSQL = docker compose exec -T db psql -U $(POSTGRES_USER) -v ON_ERROR_STOP=1
 
-.PHONY: dev check test build down logs deploy ssh grant-admin revoke-admin \
+.PHONY: dev check test e2e-server database build down logs deploy ssh grant-admin revoke-admin \
 	backup restore
 
 dev:
@@ -18,14 +20,27 @@ check:
 	npx tsc --noEmit
 
 test:
-	docker compose up -d --wait db
-	@$(PSQL) -d postgres -tAc "SELECT 1 FROM pg_database \
-		WHERE datname = '$(POSTGRES_DB)_test'" | grep -q 1 \
-		|| docker compose exec -T db \
-			createdb -U $(POSTGRES_USER) $(POSTGRES_DB)_test
+	@$(MAKE) --no-print-directory database NAME=$(POSTGRES_DB)_test
 	@DATABASE_URL="$(TEST_DATABASE_URL)" npx prisma migrate deploy
 	@TEST_DATABASE_URL="$(TEST_DATABASE_URL)" node --import tsx --test \
 		--test-concurrency=1 'tests/**/*.test.ts'
+
+# The API the end-to-end suite runs against (tests/e2e/server.ts), on
+# E2E_API_PORT; Playwright starts it. Its services are faked, so their keys
+# are stand-ins and no real one is needed.
+e2e-server:
+	@$(MAKE) --no-print-directory database NAME=$(POSTGRES_DB)_e2e
+	@DATABASE_URL="$(E2E_DATABASE_URL)" npx prisma migrate deploy
+	@DATABASE_URL="$(E2E_DATABASE_URL)" PORT=$(E2E_API_PORT) \
+		CORS_ORIGINS=$(E2E_WEB_URL) FRONTEND_URL=$(E2E_WEB_URL) \
+		JWT_SECRET=e2e RESEND_API_KEY=e2e GOOGLE_CLIENT_ID=e2e SENTRY_DSN= \
+		npx tsx tests/e2e/server.ts
+
+database:
+	docker compose up -d --wait db
+	@$(PSQL) -d postgres -tAc "SELECT 1 FROM pg_database \
+		WHERE datname = '$(NAME)'" | grep -q 1 \
+		|| docker compose exec -T db createdb -U $(POSTGRES_USER) $(NAME)
 
 build:
 	docker compose up -d --build --force-recreate \

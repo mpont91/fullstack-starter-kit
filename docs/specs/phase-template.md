@@ -47,3 +47,6 @@ waits for it.
 
 [One paragraph: every criterion above checked, and what that means for the
 user.]
+
+Every journey the phase adds or changes has its end-to-end test in `apps/e2e`,
+and `make e2e` passes.

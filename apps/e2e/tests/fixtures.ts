@@ -1,0 +1,51 @@
+import { test as base, expect, type Page } from '@playwright/test'
+import { STORAGE_PREFIX, authResponseSchema } from '@app/shared'
+import { API_URL } from '../playwright.config'
+
+interface Account {
+  email: string
+  password: string
+}
+
+// `account`: a new verified user, for this test alone.
+// `page` opens signed in as them, unless the test sets `signedIn: false`.
+export const test = base.extend<{ account: Account; signedIn: boolean }>({
+  signedIn: [true, { option: true }],
+  account: async ({ request }, use) => {
+    const response = await request.post(`${API_URL}/e2e/accounts`)
+    expect(response.ok()).toBe(true)
+    await use((await response.json()).data)
+  },
+  page: async ({ page, request, account, signedIn }, use) => {
+    // Nothing leaves the machine: Google's sign-in button, for one, would.
+    await page.route(
+      (url) => url.hostname !== 'localhost',
+      (route) => route.abort(),
+    )
+    if (!signedIn) return use(page)
+    const response = await request.post(`${API_URL}/auth/login`, {
+      data: account,
+    })
+    expect(response.ok()).toBe(true)
+    const { token, user } = authResponseSchema.parse(
+      (await response.json()).data,
+    )
+    // As the login form leaves it (see apps/web/src/services/session.ts).
+    await page.addInitScript(
+      ({ prefix, token, user }) => {
+        localStorage.setItem(`${prefix}.token`, token)
+        localStorage.setItem(`${prefix}.user`, JSON.stringify(user))
+      },
+      { prefix: STORAGE_PREFIX, token, user },
+    )
+    await use(page)
+  },
+})
+
+export { expect }
+
+// Astro renders the islands on the server and Vue takes them over in the
+// browser: typing into a form before that is lost when it does.
+export async function hydrated(page: Page): Promise<void> {
+  await expect(page.locator('astro-island[ssr]')).toHaveCount(0)
+}

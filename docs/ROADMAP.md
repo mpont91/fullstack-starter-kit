@@ -31,6 +31,9 @@ These apply to every phase:
 - **Multi-user and private:** every record belongs to a user and every query is
   scoped by it. Admins manage accounts, never their contents.
 - [The product's own constraints.]
+- **Tested in a browser:** every journey a user takes has an end-to-end test,
+  written with Playwright in `apps/e2e`, on a desktop and on a phone. A phase
+  isn't done until `make e2e` passes with its journeys in it.
 
 Technical details are decided in `ARCHITECTURE.md`.
 

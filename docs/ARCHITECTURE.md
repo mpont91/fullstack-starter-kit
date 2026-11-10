@@ -176,6 +176,31 @@ helper with `node:test` tests; components only wire it to the template and are
 checked in the browser. A component test runner would mean a second test
 framework (Vitest or similar) for little gain while components stay thin.
 
+## End-to-end tests (`apps/e2e`)
+
+**Every project has a browser suite, and every user journey a test in it.** Unit
+and integration tests prove the figures and the rules, but not that a page shows
+them or that a form submits: without a browser, the web's changes were only ever
+seen by the owner, often in production. The suite walks the journeys that matter
+as a user does, on a phone and on a desktop, and is how a change to the web is
+verified, by people and agents alike.
+
+**Playwright, with its own runner.** It's what most people use for it, and its
+runner is the reason to: it waits for the page instead of sleeping, runs tests
+side by side, and keeps a trace and a screenshot of every failure. So it's the
+one place that doesn't use `node:test`.
+
+**The real API and the built web, with only the outside faked.** The suite runs
+the API's own code against its own database (`<db>_e2e`), with the stand-ins the
+integration tests already use for every outside service
+(`apps/api/tests/e2e/server.ts`), and the web built as it's deployed. A run
+never touches the network, and the browser is stopped from reaching anything
+outside the machine. Each test gets an account of its own, created by a route
+only that server has, so tests never share state and run in parallel.
+
+**Outside `make check`.** It needs the database, a browser and about a minute,
+so it's `make e2e`, run before a change to what a user sees is committed.
+
 ## Monitoring
 
 **Free tiers only: Sentry (EU region) for errors, and an uptime monitor.** The
