@@ -45,3 +45,5 @@ once (it needs sudo).
 - Nothing reaches the network: the fixture aborts any request that isn't to
   localhost, and the e2e API fakes every outside service. A new outside service
   gets its fake there as well as in the integration tests.
+- Each test comes from an address of its own, so a failed login in one doesn't
+  count against another.

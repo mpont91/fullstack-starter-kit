@@ -196,7 +196,10 @@ integration tests already use for every outside service
 (`apps/api/tests/e2e/server.ts`), and the web built as it's deployed. A run
 never touches the network, and the browser is stopped from reaching anything
 outside the machine. Each test gets an account of its own, created by a route
-only that server has, so tests never share state and run in parallel.
+only that server has, so tests never share state and run in parallel. Each also
+comes from an address of its own (`X-Forwarded-For`, read through one trusted
+proxy hop as in production), so the limits per address don't add up across the
+suite.
 
 **Outside `make check`.** It needs the database, a browser and about a minute,
 so it's `make e2e`, run before a change to what a user sees is committed.

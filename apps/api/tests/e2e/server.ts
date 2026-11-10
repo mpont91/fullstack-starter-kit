@@ -64,6 +64,10 @@ if (tables.length > 0) {
 }
 
 const app = express()
+// One proxy hop, as in production (src/index.ts). Each test says its own
+// address in X-Forwarded-For, so the rate limits count each test as a visitor
+// of its own, not the whole suite as one.
+app.set('trust proxy', 1)
 app.use(cors({ origin: settings.corsOrigins }))
 app.use(express.json())
 app.post('/e2e/accounts', async (_: Request, res: Response) => {

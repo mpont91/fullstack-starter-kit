@@ -11,6 +11,16 @@ interface Account {
 // `page` opens signed in as them, unless the test sets `signedIn: false`.
 export const test = base.extend<{ account: Account; signedIn: boolean }>({
   signedIn: [true, { option: true }],
+  // Every test comes from an address of its own, as different users would,
+  // so the API's limits per address (failed logins, sign-ups) don't add up
+  // across the suite. The e2e API trusts one proxy hop to read it.
+  // Playwright reads a fixture's dependencies from its first argument, which
+  // must be an object pattern even when there are none.
+  // eslint-disable-next-line no-empty-pattern
+  extraHTTPHeaders: async ({}, use) => {
+    const byte = () => Math.floor(Math.random() * 256)
+    await use({ 'X-Forwarded-For': `10.${byte()}.${byte()}.${byte()}` })
+  },
   account: async ({ request }, use) => {
     const response = await request.post(`${API_URL}/e2e/accounts`)
     expect(response.ok()).toBe(true)

@@ -340,8 +340,9 @@ the API with those same fakes put into the `Container`, on `<POSTGRES_DB>_e2e`,
 emptied when it starts, with nothing on a schedule and stand-in keys for the
 faked services. It adds one route, `POST /e2e/accounts`, which creates a
 verified account for each test; what an account starts with in a product is set
-up there. A new outside service gets its fake there as well as in the
-integration tests.
+up there. It trusts one proxy hop, as production does, so each test's
+`X-Forwarded-For` is its own address for the rate limits. A new outside service
+gets its fake there as well as in the integration tests.
 
 A calculation the product promises to get right (money, scores, anything a user
 checks against another source) is a pure function with **tests worked out by
