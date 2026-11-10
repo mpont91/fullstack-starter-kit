@@ -49,3 +49,28 @@ export { expect }
 export async function hydrated(page: Page): Promise<void> {
   await expect(page.locator('astro-island[ssr]')).toHaveCount(0)
 }
+
+// Google's script stood in for: its button, "Sign in with Google", signs in
+// as `email`, handing the app the credential the e2e API takes as that
+// address's Google account (apps/api/tests/e2e/server.ts).
+export async function googleAs(page: Page, email: string): Promise<void> {
+  await page.route('https://accounts.google.com/gsi/client', (route) =>
+    route.fulfill({
+      contentType: 'text/javascript',
+      body: `
+        let signedIn
+        window.google = { accounts: { id: {
+          initialize: (config) => { signedIn = config.callback },
+          renderButton: (element) => {
+            const button = document.createElement('button')
+            button.type = 'button'
+            button.textContent = 'Sign in with Google'
+            button.onclick = () =>
+              signedIn({ credential: 'fake-google:' + ${JSON.stringify(email)} })
+            element.append(button)
+          },
+        } } }
+      `,
+    }),
+  )
+}

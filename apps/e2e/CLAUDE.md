@@ -38,6 +38,10 @@ once (it needs sudo).
   Vue drops what's typed before it takes the page over.
 - Tests run in parallel, on a desktop and on a phone. Skip one on a project only
   when the page is really different there, and say why.
+- Signing in with Google: `googleAs(page, email)`, from `./fixtures`, replaces
+  Google's script in the browser. Its button, "Sign in with Google", signs in as
+  the address the test picks, which the e2e API takes as a verified Google
+  account.
 - Nothing reaches the network: the fixture aborts any request that isn't to
   localhost, and the e2e API fakes every outside service. A new outside service
   gets its fake there as well as in the integration tests.

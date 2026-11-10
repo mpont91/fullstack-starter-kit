@@ -1,6 +1,6 @@
 // The API the end-to-end suite (apps/e2e) runs the app against: the real one,
 // on its own database, with what lies outside it faked as the integration
-// tests fake it. No email leaves, Google signs no one in and nothing reaches
+// tests fake it. No email leaves, Google is a stand-in and nothing reaches
 // Sentry, so a run never touches the network.
 //
 // Each test that needs a user asks it for an account of its own
@@ -18,7 +18,6 @@ import { createRouter } from '../../src/infrastructure/web/routes'
 import { errorHandler } from '../../src/infrastructure/web/middleware/error-handler'
 import { ErrorReporter } from '../../src/domain/ports/error-reporter'
 import { FakeEmailSender } from '../helpers/fake-email-sender'
-import { FakeGoogleIdentityVerifier } from '../helpers/fake-google-identity-verifier'
 
 // What would go to Sentry goes to the output Playwright shows.
 const errors: ErrorReporter = {
@@ -26,7 +25,16 @@ const errors: ErrorReporter = {
 }
 
 Container.getEmailSender = () => new FakeEmailSender()
-Container.getGoogleIdentityVerifier = () => new FakeGoogleIdentityVerifier()
+// Google's sign-in, as the stand-in for its script hands it over in the browser
+// (apps/e2e/tests/fixtures.ts, `googleAs`): a credential "fake-google:<email>"
+// is that address's Google account, with its email verified.
+Container.getGoogleIdentityVerifier = () => ({
+  verify: async (credential: string) => {
+    const email = credential.match(/^fake-google:(.+)$/)?.[1]
+    if (!email) return null
+    return { googleId: `google-${email}`, email, emailVerified: true }
+  },
+})
 Container.getErrorReporter = () => errors
 
 const PASSWORD = 'e2e-password'
