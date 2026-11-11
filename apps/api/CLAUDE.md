@@ -5,9 +5,10 @@ source of truth for how to work on it. Rules in the root `CLAUDE.md` also apply.
 
 ## What this is
 
-Backend for **[Product]**: [what it does]. Accounts (email and password, or
-Google), email, an admin panel and monitoring come from Unagi Start. Express 5 +
-Prisma 7 (PostgreSQL) + Zod, TypeScript ESM, Node 26.
+Backend for **Unagi Start**, the owner's template and its demo: accounts (email
+and password, or Google), email, an admin panel and monitoring, which every
+project started from it inherits. Express 5 + Prisma 7 (PostgreSQL) + Zod,
+TypeScript ESM, Node 26.
 
 The frontend (`apps/web`) consumes this API through the contract in
 `packages/shared`. See "The contract" below.

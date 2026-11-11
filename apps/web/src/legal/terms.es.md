@@ -1,22 +1,27 @@
 ---
-updated: 2026-10-22
+updated: 2026-11-11
 ---
 
 <!--
-Una plantilla. Todo lo que va [entre corchetes] lo rellena cada producto. Hazla
+Rellenadas para Unagi Start. Cada proyecto cambia el nombre del producto, qué es
+(apartado 1), la edad mínima si es otra y la dirección de contacto. Hazlas
 revisar antes de abrir el producto a usuarios reales.
 -->
 
-Estas condiciones regulan el uso de [Producto] («el servicio»). Al crear una
+Estas condiciones regulan el uso de Unagi Start («el servicio»). Al crear una
 cuenta o usar el servicio las aceptas. Si no estás de acuerdo, no lo uses.
 
-## 1. Qué es [Producto]
+## 1. Qué es Unagi Start
 
-[Un párrafo sobre qué hace el servicio.]
+Unagi Start es una plantilla para construir productos web full-stack, y esta web
+es su demo pública. Te permite crear una cuenta y probar los flujos con los que
+empieza cada producto construido sobre ella: darte de alta, confirmar tu email,
+entrar, cambiar el idioma o la contraseña y borrar la cuenta. No guarda nada más
+allá de tu cuenta. El servicio es gratuito.
 
 ## 2. Requisitos
 
-Debes tener al menos [16] años y capacidad legal para aceptar estas condiciones
+Debes tener al menos 16 años y capacidad legal para aceptar estas condiciones
 para usar el servicio.
 
 ## 3. Tu cuenta
@@ -55,7 +60,7 @@ servicio, avisaremos con una antelación razonable.
 
 ## 7. Responsabilidad
 
-En la medida en que lo permita la ley, [Producto] no responde de las pérdidas
+En la medida en que lo permita la ley, Unagi Start no responde de las pérdidas
 derivadas del uso del servicio. Nada en estas condiciones limita tus derechos
 como consumidor.
 
@@ -79,4 +84,4 @@ reconozca la ley.
 
 ## 11. Contacto
 
-Para cualquier duda sobre estas condiciones, escribe a **[support@dominio]**.
+Para cualquier duda sobre estas condiciones, escribe a **mpont91@gmail.com**.

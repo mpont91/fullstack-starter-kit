@@ -9,6 +9,13 @@ owner's earlier projects. They're written down so they don't have to be
 explained again: the _why_ is in `docs/ARCHITECTURE.md`, the _how_ in the
 `CLAUDE.md` files, which Claude Code reads on its own.
 
+**It runs in production as its own demo.** The web is at
+[unagistart.mpont91.com](https://unagistart.mpont91.com), on Vercel, and the API
+at `api.unagistart.mpont91.com`, on the owner's VPS: this repository as it is,
+where anyone can create an account and try what every project starts with. Its
+`docs/` describe Unagi Start as a product; the blank ones a new project starts
+from are in `docs/templates/`.
+
 ## What's inside
 
 | Area       | What you get                                                                                                          |
@@ -43,19 +50,25 @@ The new repository starts from a single commit, without this one's history.
 ### 2. Make it yours
 
 - [ ] `packages/shared/src/brand.ts`: `APP_NAME`, `APP_DOMAIN`, `APP_SLUG`.
-- [ ] The product's description at the top of the three `CLAUDE.md` files (the
-      `[brackets]`), and its security rules in the root one.
-- [ ] `docs/VISION.md`, then `docs/ROADMAP.md` and the first spec from
-      `docs/specs/phase-template.md`. Write them before any code: they're what
-      Claude checks every decision against.
+- [ ] The product's description at the top of the three `CLAUDE.md` files (they
+      describe Unagi Start), and its security rules in the root one.
+- [ ] `docs/VISION.md`, then `docs/ROADMAP.md` and the first spec, from the
+      blank ones in `docs/templates/` (the ones in `docs/` are Unagi Start's):
+      delete `docs/specs/` and copy the skeletons over. Write them before any
+      code: they're what Claude checks every decision against.
 - [ ] The palette in `apps/web/src/styles/global.css` (and the same colours in
       `apps/api/src/infrastructure/email/email-layout.ts`).
 - [ ] The logo: `apps/web/src/assets/logo.svg`, `apps/web/public/favicon.svg`,
       and `apps/web/public/apple-touch-icon.png` (180×180, used by the emails).
 - [ ] The landing copy (`home.*` in `apps/web/src/i18n/en.ts` and `es.ts`) and
       `AppHome.vue`, the first screen after logging in.
-- [ ] The legal pages in `apps/web/src/legal/`: fill in the `[brackets]` and
-      have them reviewed before real users arrive.
+- [ ] `apps/web/src/constants.ts`: `CONTACT_EMAIL`, the address the contact page
+      shows, and `REPOSITORY_URL`, the code the landing links to (empty it if
+      the code isn't public).
+- [ ] The legal pages in `apps/web/src/legal/`, filled in for Unagi Start: the
+      product's name, the controller, the contact and what the product stores,
+      as the comment at the top of each says. Have them reviewed before real
+      users arrive.
 - [ ] Remove from this README what's about the template, and describe the
       product instead.
 
@@ -91,7 +104,9 @@ Each one is free at a small product's scale. They can come in any order. Each
 name links to its console; the providers named are the ones the owner's projects
 use, so one account serves them all.
 
-- [ ] **Domain,** with its DNS, on [IONOS](https://my.ionos.es/).
+- [ ] **Domain,** bought on [IONOS](https://my.ionos.es/), its nameservers
+      pointed at [Vercel](https://vercel.com/dashboard/domains), which holds the
+      DNS (see "Hosting and deploy" in `docs/ARCHITECTURE.md`).
 - [ ] **A VPS** on [Clouding.io](https://portal.clouding.io/) (see "The server",
       below).
 - [ ] **[Resend](https://resend.com/emails):** verify the domain, create an API

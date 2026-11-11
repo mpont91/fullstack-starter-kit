@@ -1,5 +1,6 @@
 export default {
-  'app.description': 'A web app built on Unagi Start.',
+  'app.description':
+    'A full-stack TypeScript template, running in production as its own demo.',
 
   'nav.home': 'Home',
   'nav.contact': 'Contact',
@@ -27,34 +28,50 @@ export default {
   'legal.terms.title': 'Terms of service',
   'legal.updated': 'Last updated: {date}',
 
-  'home.hero.title': 'Your product,\nready from day one.',
+  'home.hero.title': 'Start on your first feature,\nnot on the groundwork.',
   'home.hero.subtitle':
-    'Accounts, email, two languages, monitoring and backups are already done. What is left is the part only you can build.',
-  'home.hero.cta': 'Get started',
+    'Unagi Start is a full-stack TypeScript template with accounts, email in two languages, an admin panel, monitoring, backups and deployment already built, tested and running in production. This site is the template itself: try it.',
+  'home.hero.cta': 'Try it',
+  'home.hero.code': 'See the code',
 
-  'home.features.one.title': 'Accounts that just work',
+  'home.features.one.title': 'Accounts',
   'home.features.one.detail':
-    'Email and password or Google, confirmed addresses, password resets and sessions you can end.',
+    'Email and password or Google, confirmed addresses, password resets, sessions you can end, and deleting the account.',
   'home.features.two.title': 'Two languages',
   'home.features.two.detail':
-    'Every page in English and Spanish, and emails in the language each user chose.',
-  'home.features.three.title': 'Built to grow',
+    'Every page in English and Spanish, and every email in the language each user chose.',
+  'home.features.three.title': 'Admin panel',
   'home.features.three.detail':
-    'A typed contract between the web and the API, and a clean place for every new feature.',
+    'Accounts and sign-up metrics for admins, who see counts, never what a user keeps.',
+  'home.features.four.title': 'Monitoring',
+  'home.features.four.detail':
+    'Errors from the API and the web reach Sentry, with nothing personal in them.',
+  'home.features.five.title': 'Backups',
+  'home.features.five.detail':
+    'An encrypted copy of the database every night, off-site, and one command to restore it.',
+  'home.features.six.title': 'Deployment',
+  'home.features.six.detail':
+    'The API in Docker on a server, the web on Vercel, migrations run before the swap.',
 
   'home.how.title': 'How it works',
-  'home.how.step1.title': 'Create your account',
-  'home.how.step1.detail': 'With your email or your Google account.',
-  'home.how.step2.title': 'Confirm your email',
-  'home.how.step2.detail': 'One click on the link we send you.',
-  'home.how.step3.title': 'Start using it',
-  'home.how.step3.detail': 'Your space is ready the moment you log in.',
+  'home.how.step1.title': 'Try it',
+  'home.how.step1.detail':
+    'Create an account here: confirm your email, log in, change your language, delete it.',
+  'home.how.step2.title': 'Use the template',
+  'home.how.step2.detail':
+    'On GitHub, "Use this template" gives you a repository of your own.',
+  'home.how.step3.title': 'Make it yours',
+  'home.how.step3.detail':
+    'Its README walks you through the name, the docs, the palette and the accounts.',
 
   'home.app.title': 'Welcome',
   'home.app.signedInAs': 'Signed in as {email}.',
   'home.app.loadError': "Couldn't load your account.",
-  'home.app.empty.title': 'Nothing here yet',
-  'home.app.empty.hint': "This is where the product's first screen goes.",
+  'home.app.ready.title': 'Your account is ready',
+  'home.app.ready.hint':
+    'This is where a project built on Unagi Start shows its first screen. Here, your profile is where you change your language or password, or delete the account.',
+  'home.app.ready.profile': 'Go to your profile',
+  'home.app.ready.code': 'See the code',
 
   'login.title': 'Welcome back',
   'login.subtitle': 'Log in to your account.',

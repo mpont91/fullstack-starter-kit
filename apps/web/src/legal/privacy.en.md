@@ -1,22 +1,24 @@
 ---
-updated: 2026-10-22
+updated: 2026-11-11
 ---
 
 <!--
-A template. Everything in [brackets] is the product's to fill in, and the
-sections marked "the product's own data" are where what it stores goes. The
-providers listed are the ones Unagi Start ships with: remove any you drop
-and add any you take on. Have it reviewed before opening to real users.
+Filled in for Unagi Start, which stores the account and nothing else. A
+project changes the product's name, the controller and the contact address,
+and adds what it stores: under "What data we process", as a purpose, in what
+error reports never include, and in how long it's kept. The providers listed
+are the ones Unagi Start ships with: remove any you drop and add any you take
+on. Have it reviewed before opening to real users.
 -->
 
-This policy explains what personal data [Product] ("we") processes, why, for how
-long, and what rights you have over it. It applies to the [Product] website and
-app.
+This policy explains what personal data Unagi Start ("we") processes, why, for
+how long, and what rights you have over it. It applies to the Unagi Start
+website and app.
 
 ## 1. Data controller
 
-The data controller is [owner's full name], owner of [Product]. For any privacy
-question, or to exercise your rights, write to **[support@domain]**.
+The data controller is Marc Pont, owner of Unagi Start. For any privacy
+question, or to exercise your rights, write to **mpont91@gmail.com**.
 
 ## 2. What data we process
 
@@ -27,14 +29,13 @@ question, or to exercise your rights, write to **[support@domain]**.
   its identifier, which Google sends us once you choose to sign in with it. We
   don't receive or keep your name, your picture or anything else from your
   Google account.
-- **[The product's own data]:** [what the user stores in the app].
 - **Email confirmation and password reset:** single-use links, stored as a hash,
   that expire.
 - **Technical data:** the IP address and request details that the servers log
   when serving your visit.
 - **Error reports:** when something fails, on our servers or in your browser,
   the error, the page or address where it happened and, if you are logged in,
-  your user id. Never your email, your session or [the product's own data].
+  your user id. Never your email or your session.
 
 We do not ask for or process special categories of data.
 
@@ -43,7 +44,6 @@ We do not ask for or process special categories of data.
 | Purpose                                                    | Legal basis (GDPR)                       |
 | ---------------------------------------------------------- | ---------------------------------------- |
 | Create and maintain your account                           | Performance of a contract (Art. 6(1)(b)) |
-| [Provide the product's features]                           | Performance of a contract (Art. 6(1)(b)) |
 | Send you service emails (email confirmation, password)     | Performance of a contract (Art. 6(1)(b)) |
 | Keep the service secure and prevent abuse                  | Legitimate interests (Art. 6(1)(f))      |
 | Detect and fix errors and outages                          | Legitimate interests (Art. 6(1)(f))      |
@@ -87,8 +87,7 @@ European Commission.
 
 ## 6. How long we keep it
 
-- Your account and [the product's own data] are kept for as long as your account
-  is active.
+- Your account is kept for as long as it is active.
 - **If you delete your account, it is erased immediately** from our database
   together with everything linked to it. It can survive for **up to 30 days** in
   the encrypted backups, which are deleted automatically on that schedule and
@@ -111,7 +110,7 @@ under Google's policy.
 
 You can exercise your rights of **access, rectification, erasure, objection,
 restriction of processing and data portability** at any time by writing to
-[support@domain]. We will reply within one month.
+mpont91@gmail.com. We will reply within one month.
 
 You can **delete your account and all your data** yourself from your profile,
 without writing to us.
@@ -128,7 +127,7 @@ measures to protect your data.
 
 ## 10. Minors
 
-[Product] is intended only for people aged [16] or over. We do not knowingly
+Unagi Start is intended only for people aged 16 or over. We do not knowingly
 process data from minors; if we find an account belonging to a minor, we will
 delete it.
 

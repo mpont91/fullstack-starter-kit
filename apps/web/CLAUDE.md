@@ -5,10 +5,10 @@ the root `CLAUDE.md` also apply.
 
 ## What this is
 
-Frontend for **[Product]**: [what the user does here]. The landing, log in and
-sign-up (email or Google), the profile, the admin panel and the legal pages come
-from Unagi Start. Astro 7 (static output) + Vue 3 islands + Tailwind 4,
-TypeScript, Node 26.
+Frontend for **Unagi Start**, the owner's template and its demo: the landing
+that presents it, log in and sign-up (email or Google), the profile, the admin
+panel and the legal pages, which every project started from it inherits. Astro 7
+(static output) + Vue 3 islands + Tailwind 4, TypeScript, Node 26.
 
 This app owns **no data and no business logic** — it renders what the API
 returns. Anything that looks like a rule or a calculation (limits, totals,

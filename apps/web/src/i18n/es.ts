@@ -1,5 +1,6 @@
 export default {
-  'app.description': 'Una aplicación web construida sobre Unagi Start.',
+  'app.description':
+    'Una plantilla full-stack en TypeScript, en producción como su propia demo.',
 
   'nav.home': 'Inicio',
   'nav.contact': 'Contacto',
@@ -28,34 +29,51 @@ export default {
   'legal.terms.title': 'Términos de uso',
   'legal.updated': 'Última actualización: {date}',
 
-  'home.hero.title': 'Tu producto,\nlisto desde el primer día.',
+  'home.hero.title':
+    'Empieza por tu primera funcionalidad,\nno por los cimientos.',
   'home.hero.subtitle':
-    'Cuentas, emails, dos idiomas, monitorización y copias de seguridad ya están hechos. Lo que falta es la parte que solo puedes construir tú.',
-  'home.hero.cta': 'Empezar',
+    'Unagi Start es una plantilla full-stack en TypeScript con cuentas, emails en dos idiomas, panel de administración, monitorización, copias de seguridad y despliegue ya hechos, probados y funcionando en producción. Esta web es la propia plantilla: pruébala.',
+  'home.hero.cta': 'Pruébala',
+  'home.hero.code': 'Ver el código',
 
-  'home.features.one.title': 'Cuentas que funcionan',
+  'home.features.one.title': 'Cuentas',
   'home.features.one.detail':
-    'Email y contraseña o Google, direcciones confirmadas, restablecer la contraseña y sesiones que puedes cerrar.',
+    'Email y contraseña o Google, direcciones confirmadas, restablecer la contraseña, sesiones que puedes cerrar y borrar la cuenta.',
   'home.features.two.title': 'Dos idiomas',
   'home.features.two.detail':
-    'Cada página en inglés y en español, y los emails en el idioma que eligió cada usuario.',
-  'home.features.three.title': 'Hecho para crecer',
+    'Cada página en inglés y en español, y cada email en el idioma que eligió cada usuario.',
+  'home.features.three.title': 'Panel de administración',
   'home.features.three.detail':
-    'Un contrato tipado entre la web y la API, y un sitio claro para cada nueva funcionalidad.',
+    'Cuentas y métricas de altas para los admins, que ven recuentos, nunca lo que guarda cada usuario.',
+  'home.features.four.title': 'Monitorización',
+  'home.features.four.detail':
+    'Los errores de la API y de la web llegan a Sentry, sin nada personal en ellos.',
+  'home.features.five.title': 'Copias de seguridad',
+  'home.features.five.detail':
+    'Una copia cifrada de la base de datos cada noche, fuera del servidor, y un comando para restaurarla.',
+  'home.features.six.title': 'Despliegue',
+  'home.features.six.detail':
+    'La API en Docker en un servidor, la web en Vercel y las migraciones antes del cambio.',
 
   'home.how.title': 'Cómo funciona',
-  'home.how.step1.title': 'Crea tu cuenta',
-  'home.how.step1.detail': 'Con tu email o con tu cuenta de Google.',
-  'home.how.step2.title': 'Confirma tu email',
-  'home.how.step2.detail': 'Un clic en el enlace que te enviamos.',
-  'home.how.step3.title': 'Empieza a usarlo',
-  'home.how.step3.detail': 'Tu espacio está listo en cuanto entras.',
+  'home.how.step1.title': 'Pruébala',
+  'home.how.step1.detail':
+    'Crea una cuenta aquí: confirma tu email, entra, cambia el idioma, bórrala.',
+  'home.how.step2.title': 'Usa la plantilla',
+  'home.how.step2.detail':
+    'En GitHub, "Use this template" te da un repositorio propio.',
+  'home.how.step3.title': 'Hazla tuya',
+  'home.how.step3.detail':
+    'Su README te guía por el nombre, los docs, la paleta y las cuentas.',
 
   'home.app.title': 'Te damos la bienvenida',
   'home.app.signedInAs': 'Has entrado como {email}.',
   'home.app.loadError': 'No se ha podido cargar tu cuenta.',
-  'home.app.empty.title': 'Aún no hay nada aquí',
-  'home.app.empty.hint': 'Aquí va la primera pantalla del producto.',
+  'home.app.ready.title': 'Tu cuenta está lista',
+  'home.app.ready.hint':
+    'Aquí es donde un proyecto construido sobre Unagi Start muestra su primera pantalla. Aquí, en tu perfil puedes cambiar el idioma o la contraseña, o borrar la cuenta.',
+  'home.app.ready.profile': 'Ir a tu perfil',
+  'home.app.ready.code': 'Ver el código',
 
   'login.title': 'Bienvenido de nuevo',
   'login.subtitle': 'Entra en tu cuenta.',

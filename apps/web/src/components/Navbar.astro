@@ -80,7 +80,7 @@ const languageLinks = Object.entries(languages).map(([code, label]) => ({
 ---
 
 <header class="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
-  <nav class="mx-auto flex h-16 max-w-7xl items-center gap-8 px-4 sm:px-6 lg:px-8">
+  <nav class="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 md:gap-8 sm:px-6 lg:px-8">
     <!-- Logo -->
     {homes.map((home) => (
       <a
@@ -89,7 +89,9 @@ const languageLinks = Object.entries(languages).map(([code, label]) => ({
         class="flex items-center gap-2.5"
       >
         <Image src={logo} alt="" width={36} height={36} class="size-9" />
-        <span class="text-lg font-bold tracking-tight">{APP_NAME}</span>
+        <span class="text-lg font-bold tracking-tight whitespace-nowrap max-[389px]:sr-only">
+          {APP_NAME}
+        </span>
       </a>
     ))}
 
@@ -105,7 +107,7 @@ const languageLinks = Object.entries(languages).map(([code, label]) => ({
     </ul>
 
     <!-- User -->
-    <div class="ml-auto flex items-center gap-4">
+    <div class="ml-auto flex items-center gap-2 sm:gap-4">
       <!-- Language -->
       <div class="relative">
         <button
@@ -154,7 +156,7 @@ const languageLinks = Object.entries(languages).map(([code, label]) => ({
       <a
         href={path('/login')}
         data-auth="out"
-        class="rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-primary-50 transition hover:bg-primary-500"
+        class="rounded-lg bg-primary-600 px-4 py-2 whitespace-nowrap text-sm font-semibold text-primary-50 transition hover:bg-primary-500"
       >
         {t('nav.login')}
       </a>

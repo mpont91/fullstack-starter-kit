@@ -1,7 +1,7 @@
 # Phase N — [Name]
 
-> Status: 🟡 Spec in progress. Copy this file to `phase-N-<name>.md` and link it
-> from `ROADMAP.md`.
+> Status: 🟡 Spec in progress. Copy this file to `docs/specs/phase-N-<name>.md`
+> and link it from `ROADMAP.md`.
 
 **Goal:** [one paragraph: what the user can do when this phase is done that they
 can't today].

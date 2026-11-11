@@ -5,10 +5,9 @@
 
 ## Phases
 
-| #   | Phase  | Status              | Spec                                     |
-| --- | ------ | ------------------- | ---------------------------------------- |
-| 1   | [Name] | 🟡 Spec in progress | [phase-1-name.md](specs/phase-1-name.md) |
-| 2   | [Name] | ⚪ Not started      | —                                        |
+| #   | Phase              | Status            | Spec                                     |
+| --- | ------------------ | ----------------- | ---------------------------------------- |
+| 1   | Demo in production | 🔵 In development | [phase-1-demo.md](specs/phase-1-demo.md) |
 
 Status values: ⚪ Not started · 🟡 Spec in progress · 🔵 In development · 🟢
 Done
@@ -16,6 +15,10 @@ Done
 A phase only moves to "In development" once its spec has no blocking open
 questions. A phase is "Done" when every acceptance criterion in its spec is
 checked.
+
+The template was built and used by the owner's projects before this roadmap
+existed. Phase 1 starts from it as it is: it turns the template into a product
+of its own, running in production.
 
 ## Global constraints
 
@@ -30,7 +33,8 @@ These apply to every phase:
   Spanish.
 - **Multi-user and private:** every record belongs to a user and every query is
   scoped by it. Admins manage accounts, never their contents.
-- [The product's own constraints.]
+- **Generic only:** nothing is built for the demo alone (see "The demo is the
+  template" in `VISION.md`).
 - **Tested in a browser:** every journey a user takes has an end-to-end test,
   written with Playwright in `apps/e2e`, on a desktop and on a phone. A phase
   isn't done until `make e2e` passes with its journeys in it.
@@ -39,4 +43,6 @@ Technical details are decided in `ARCHITECTURE.md`.
 
 ## Out of scope for now
 
-- [What has been asked for or considered, and deliberately left out.]
+- Payments, subscriptions and teams.
+- Features of the demo's own beyond accounts and their administration.
+- Languages other than English and Spanish.

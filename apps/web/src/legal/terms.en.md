@@ -1,23 +1,29 @@
 ---
-updated: 2026-10-22
+updated: 2026-11-11
 ---
 
 <!--
-A template. Everything in [brackets] is the product's to fill in. Have it
+Filled in for Unagi Start. A project changes the product's name, what it is
+(section 1), the minimum age if it differs and the contact address. Have it
 reviewed before opening to real users.
 -->
 
-These terms govern your use of [Product] ("the service"). By creating an account
-or using the service you accept them. If you do not agree, do not use it.
+These terms govern your use of Unagi Start ("the service"). By creating an
+account or using the service you accept them. If you do not agree, do not use
+it.
 
-## 1. What [Product] is
+## 1. What Unagi Start is
 
-[One paragraph on what the service does.]
+Unagi Start is a template for building full-stack web products, and this site is
+its public demo. It lets you create an account and try the flows every product
+built on it starts with: signing up, confirming your email, logging in, changing
+your language or your password, and deleting the account. It stores nothing
+beyond your account. The service is free.
 
 ## 2. Eligibility
 
-You must be at least [16] years old and legally able to accept these terms to
-use the service.
+You must be at least 16 years old and legally able to accept these terms to use
+the service.
 
 ## 3. Your account
 
@@ -55,9 +61,9 @@ service down, we will give reasonable notice.
 
 ## 7. Liability
 
-To the extent permitted by law, [Product] is not liable for losses arising from
-use of the service. Nothing in these terms limits your rights under consumer
-protection law.
+To the extent permitted by law, Unagi Start is not liable for losses arising
+from use of the service. Nothing in these terms limits your rights under
+consumer protection law.
 
 ## 8. Closing your account and suspension
 
@@ -79,4 +85,4 @@ you.
 
 ## 11. Contact
 
-For any questions about these terms, write to **[support@domain]**.
+For any questions about these terms, write to **mpont91@gmail.com**.

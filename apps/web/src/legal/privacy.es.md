@@ -1,23 +1,25 @@
 ---
-updated: 2026-10-22
+updated: 2026-11-11
 ---
 
 <!--
-Una plantilla. Todo lo que va [entre corchetes] lo rellena cada producto, y las
-partes de "los datos propios del producto" son donde va lo que guarda. Los
+Rellenada para Unagi Start, que guarda la cuenta y nada más. Cada proyecto
+cambia el nombre del producto, el responsable y la dirección de contacto, y
+añade lo que guarda: en "Qué datos tratamos", como finalidad, en lo que los
+informes de errores nunca incluyen y en cuánto tiempo se conserva. Los
 proveedores son los que trae Unagi Start: quita los que no uses y añade los
 nuevos. Hazla revisar antes de abrir el producto a usuarios reales.
 -->
 
-Esta política explica qué datos personales trata [Producto] («nosotros»), para
+Esta política explica qué datos personales trata Unagi Start («nosotros»), para
 qué, durante cuánto tiempo y qué derechos tienes sobre ellos. Se aplica a la web
-y a la aplicación de [Producto].
+y a la aplicación de Unagi Start.
 
 ## 1. Responsable del tratamiento
 
-El responsable del tratamiento es [nombre completo del titular], titular de
-[Producto]. Para cualquier duda sobre privacidad, o para ejercer tus derechos,
-escribe a **[support@dominio]**.
+El responsable del tratamiento es Marc Pont, titular de Unagi Start. Para
+cualquier duda sobre privacidad, o para ejercer tus derechos, escribe a
+**mpont91@gmail.com**.
 
 ## 2. Qué datos tratamos
 
@@ -27,15 +29,13 @@ escribe a **[support@dominio]**.
 - **Si entras con Google:** el email de tu cuenta de Google y su identificador,
   que Google nos envía cuando eliges entrar con ella. No recibimos ni guardamos
   tu nombre, tu foto ni nada más de tu cuenta de Google.
-- **[Los datos propios del producto]:** [lo que el usuario guarda en la app].
 - **Confirmación del email y restablecimiento de la contraseña:** enlaces de un
   solo uso, guardados como hash, que caducan.
 - **Datos técnicos:** la dirección IP y los detalles de la petición que los
   servidores registran al atender tu visita.
 - **Informes de errores:** cuando algo falla, en nuestros servidores o en tu
   navegador, el error, la página o dirección donde ocurrió y, si has iniciado
-  sesión, tu identificador de usuario. Nunca tu email, tu sesión ni [los datos
-  propios del producto].
+  sesión, tu identificador de usuario. Nunca tu email ni tu sesión.
 
 No pedimos ni tratamos categorías especiales de datos.
 
@@ -44,7 +44,6 @@ No pedimos ni tratamos categorías especiales de datos.
 | Finalidad                                                 | Base legal (RGPD)                     |
 | --------------------------------------------------------- | ------------------------------------- |
 | Crear y mantener tu cuenta                                | Ejecución de un contrato (art. 6.1.b) |
-| [Ofrecer las funciones del producto]                      | Ejecución de un contrato (art. 6.1.b) |
 | Enviarte emails del servicio (confirmación, contraseña)   | Ejecución de un contrato (art. 6.1.b) |
 | Mantener el servicio seguro y evitar abusos               | Interés legítimo (art. 6.1.f)         |
 | Detectar y corregir errores y caídas                      | Interés legítimo (art. 6.1.f)         |
@@ -89,8 +88,7 @@ Cláusulas Contractuales Tipo aprobadas por la Comisión Europea.
 
 ## 6. Cuánto tiempo los conservamos
 
-- Tu cuenta y [los datos propios del producto] se conservan mientras tu cuenta
-  esté activa.
+- Tu cuenta se conserva mientras esté activa.
 - **Si eliminas tu cuenta, se borra al instante** de nuestra base de datos junto
   con todo lo vinculado a ella. Puede sobrevivir **hasta 30 días** en las copias
   de seguridad cifradas, que se borran automáticamente con ese calendario y solo
@@ -114,7 +112,7 @@ puede usar sus propias cookies en él según su política.
 
 Puedes ejercer tus derechos de **acceso, rectificación, supresión, oposición,
 limitación del tratamiento y portabilidad** en cualquier momento escribiendo a
-[support@dominio]. Te responderemos en el plazo de un mes.
+mpont91@gmail.com. Te responderemos en el plazo de un mes.
 
 Puedes **eliminar tu cuenta y todos tus datos** tú mismo desde tu perfil, sin
 necesidad de escribirnos.
@@ -131,7 +129,7 @@ seguro, pero tomamos medidas razonables para proteger tus datos.
 
 ## 10. Menores
 
-[Producto] está pensado solo para personas de [16] años o más. No tratamos a
+Unagi Start está pensado solo para personas de 16 años o más. No tratamos a
 sabiendas datos de menores; si encontramos una cuenta de un menor, la
 eliminaremos.
 

@@ -6,9 +6,12 @@ working inside that app.
 
 ## What this is
 
-**[Product]** ([domain]) — [one sentence on what it does and for whom]. Started
-from the `unagistart` template: accounts, email, two languages, monitoring,
-backups and deployment came with it. The product is described in `docs/`:
+**Unagi Start** (unagistart.mpont91.com) — the owner's template for new
+full-stack products, and its public demo: the template itself, deployed, where
+anyone can create an account and try what every project starts with. A project
+started from it rewrites this paragraph with its own product (see "Starting a
+project" in the README). The product is described in `docs/`, and the blank
+documents a new project starts from are in `docs/templates/`:
 
 | Document                | What it holds                                   | Changes                   |
 | ----------------------- | ----------------------------------------------- | ------------------------- |

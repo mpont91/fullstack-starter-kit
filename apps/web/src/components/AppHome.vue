@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import type { User } from '@app/shared'
-import { Sprout } from 'lucide-vue-next'
+import { ExternalLink, Sprout } from 'lucide-vue-next'
 import { provideLanguage, useTranslations } from '../i18n/vue'
 import { defaultLanguage, type Language } from '../i18n'
+import { localizePath } from '../helpers/locale-helper'
+import { REPOSITORY_URL } from '../constants'
 import { me } from '../services/auth.service'
 import { errorMessage } from '../helpers/error-helper'
 import { useAsync } from '../composables/use-async'
 import AsyncView from './ui/AsyncView.vue'
+import Button from './ui/Button.vue'
 import Card from './ui/Card.vue'
 import EmptyState from './ui/EmptyState.vue'
 import Skeleton from './ui/Skeleton.vue'
 
-// Where a session lands. A placeholder for the product's first screen, kept as
+// Where a session lands, and where a project puts its first screen. It keeps
 // the pattern every island follows: its language as a prop, its data through a
 // service and `useAsync`, a skeleton shaped like the content and an empty
 // state.
@@ -50,9 +53,23 @@ const user = useAsync<User | null>(me, {
     <Card as="section">
       <EmptyState
         :icon="Sprout"
-        :title="t('home.app.empty.title')"
-        :hint="t('home.app.empty.hint')"
-      />
+        :title="t('home.app.ready.title')"
+        :hint="t('home.app.ready.hint')"
+      >
+        <Button :href="localizePath('/app/profile', lang)">
+          {{ t('home.app.ready.profile') }}
+        </Button>
+        <Button
+          v-if="REPOSITORY_URL"
+          :href="REPOSITORY_URL"
+          variant="secondary"
+          target="_blank"
+          rel="noopener"
+        >
+          {{ t('home.app.ready.code') }}
+          <ExternalLink class="size-4" />
+        </Button>
+      </EmptyState>
     </Card>
   </div>
 </template>

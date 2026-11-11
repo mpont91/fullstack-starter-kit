@@ -1,9 +1,18 @@
 ---
 export { getLanguagePaths as getStaticPaths } from '../../helpers/locale-helper'
-import { Boxes, Languages, ShieldCheck } from '@lucide/astro'
+import {
+  Activity,
+  DatabaseBackup,
+  ExternalLink,
+  Languages,
+  LayoutDashboard,
+  Rocket,
+  ShieldCheck,
+} from '@lucide/astro'
 import Layout from '../../layouts/Layout.astro'
 import { useTranslations } from '../../i18n'
 import { languageFromPath, localizePath } from '../../helpers/locale-helper'
+import { REPOSITORY_URL } from '../../constants'
 
 const lang = languageFromPath(Astro.url.pathname)
 const t = useTranslations(lang)
@@ -23,7 +32,22 @@ const features = [
   {
     title: t('home.features.three.title'),
     detail: t('home.features.three.detail'),
-    icon: Boxes,
+    icon: LayoutDashboard,
+  },
+  {
+    title: t('home.features.four.title'),
+    detail: t('home.features.four.detail'),
+    icon: Activity,
+  },
+  {
+    title: t('home.features.five.title'),
+    detail: t('home.features.five.detail'),
+    icon: DatabaseBackup,
+  },
+  {
+    title: t('home.features.six.title'),
+    detail: t('home.features.six.detail'),
+    icon: Rocket,
   },
 ]
 
@@ -44,13 +68,24 @@ const steps = [
       {t('home.hero.subtitle')}
     </p>
 
-    <div class="mt-10 flex items-center justify-center gap-3">
+    <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
       <a
-        href={path('/login')}
+        href={path('/register')}
         class="inline-flex items-center gap-2 rounded-lg bg-primary-600 px-6 py-3 text-sm font-semibold text-primary-50 transition hover:bg-primary-500"
       >
         {t('home.hero.cta')}
       </a>
+      {REPOSITORY_URL && (
+        <a
+          href={REPOSITORY_URL}
+          target="_blank"
+          rel="noopener"
+          class="inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-6 py-3 text-sm font-semibold transition hover:bg-surface-raised"
+        >
+          {t('home.hero.code')}
+          <ExternalLink class="size-4" />
+        </a>
+      )}
     </div>
   </section>
 
