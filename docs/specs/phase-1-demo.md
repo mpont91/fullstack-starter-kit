@@ -76,6 +76,9 @@ fixed, so this spec stays the full record of what the phase did.
       as "Unagi Start", the name and "Log in" broke onto two lines at 390 px,
       and at 360 px the name ran into the language menu. Below 390 px only the
       logo shows, and the name stays as the link's text for screen readers.
+- [x] The footer's links wrap on a phone. With four links they fit, but they
+      stayed on one line, so a project that added more (Unagi Poker has seven)
+      pushed the page wider than the screen.
 
 ## Out of scope
 
