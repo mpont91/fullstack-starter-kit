@@ -3,7 +3,7 @@
 # Has the full toolchain, Prisma CLI included. Besides building, it is the image
 # the `migrate` service runs: migrations only happen on deploy, so the CLI and
 # its weight stay out of the image that serves traffic.
-FROM node:24-slim AS builder
+FROM node:26-slim AS builder
 
 WORKDIR /app
 
@@ -27,7 +27,7 @@ RUN cd apps/api && npx prisma generate && npx tsup
 
 WORKDIR /app/apps/api
 
-FROM node:24-slim
+FROM node:26-slim
 
 WORKDIR /app
 

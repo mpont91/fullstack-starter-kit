@@ -7,21 +7,21 @@
     "apps/*"
   ],
   "engines": {
-    "node": "24.x"
+    "node": "26.x"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "eslint": "^10.12.0",
+    "eslint": "^10.14.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-astro": "^3.2.1",
-    "eslint-plugin-vue": "^10.11.1",
-    "globals": "^17.13.0",
-    "prettier": "^3.9.10",
-    "prettier-plugin-astro": "^1.1.1",
+    "eslint-plugin-vue": "^10.12.1",
+    "globals": "^17.14.0",
+    "prettier": "^3.10.0",
+    "prettier-plugin-astro": "^1.1.2",
     "tsx": "^4.23.15",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.71.2",
-    "vue-eslint-parser": "^10.4.1"
+    "typescript-eslint": "^8.72.2",
+    "vue-eslint-parser": "^10.4.2"
   },
   "allowScripts": {
     "@prisma/engines": true,

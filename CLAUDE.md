@@ -175,16 +175,31 @@ Tooling every workspace uses (TypeScript, ESLint and its plugins, Prettier,
 `tsx`) is declared in the root `package.json`; what a workspace needs at
 runtime, and tooling only one workspace uses, stays in that workspace.
 
-Dependencies are updated by hand, to the latest. Two are held back on purpose:
-TypeScript stays on 6 until `typescript-eslint` and `@astrojs/check` support 7,
-and `@types/node` follows the Node major we run (24, the current LTS; `.nvmrc`
-says which, and `engine-strict` refuses another). npm blocks dependencies'
-install scripts unless they are listed in `allowScripts` in the root
-`package.json` (Prisma's engines and esbuild today); a new dependency that needs
-one is added there by name, after looking at what it runs. `npm audit` reports
-advisories in the Prisma CLI's own dependencies (`mysql2`, `deepmerge-ts`); the
-CLI is a dev tool kept out of the runtime image, and the offered "fix" is a
-downgrade, so they're left until Prisma ships one.
+**Dependencies are kept on their latest stable release, and updating them has
+priority.** When asked to update, or when a dependency is touched anyway,
+everything moves to its latest stable version, majors included: what a new major
+breaks is read in its changelog and fixed in the same change, never left for
+later out of caution.
+
+- **Stable only.** Pre-releases (`alpha`, `beta`, `rc`, `canary`, `next`,
+  `-preview`) are never adopted, even when npm's `latest` tag points to one; the
+  dependency stays on its newest stable version until a stable one ships. The
+  same goes for AI models: a stable model, not a preview.
+- **Held back only when something blocks it**, such as another dependency's peer
+  range or engines, and the hold is written here with what lifts it. Today:
+  TypeScript stays on 6 until `typescript-eslint` and `@astrojs/check` support
+  7; Prisma stays on 7 while 8 is only a release candidate.
+- **Node is the current LTS** (26), in `engines`, `.nvmrc` and the Dockerfile
+  (`engine-strict` refuses another), and `@types/node` follows its major. When a
+  new LTS lands, moving to it is part of the next update.
+
+npm blocks dependencies' install scripts unless they are listed in
+`allowScripts` in the root `package.json` (Prisma's engines and esbuild today);
+a new dependency that needs one is added there by name, after looking at what it
+runs. Advisories in transitive dependencies are fixed with `npm audit fix`,
+never `--force`. `npm audit` reports one it can't fix: `minimatch` inside ESLint
+and `typescript-eslint`, dev tools that never ship; the offered "fix" is a
+downgrade to ESLint 9, so it's left until they ship one.
 
 `.env` files are created by hand from each app's `.env.example`, once per
 machine.

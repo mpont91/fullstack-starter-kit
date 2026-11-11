@@ -138,8 +138,7 @@ const submit = useSubmit(
         :href="path('/privacy')"
         class="text-primary-400 hover:text-primary-300"
       >
-        {{ t('legal.privacy.title') }}</a
-      >.
+        {{ t('legal.privacy.title') }}</a>.
     </p>
 
     <p class="mt-6 text-center text-sm text-muted">

@@ -14,7 +14,7 @@ explained again: the _why_ is in `docs/ARCHITECTURE.md`, the _how_ in the
 | Area       | What you get                                                                                                          |
 | ---------- | --------------------------------------------------------------------------------------------------------------------- |
 | Monorepo   | npm workspaces: `apps/api`, `apps/web`, `packages/shared` (the Zod contract both apps import). `make` for everything. |
-| API        | Express 5, Prisma 7 (PostgreSQL), Zod, TypeScript ESM, Node 24. Hexagonal: domain / application / infrastructure.     |
+| API        | Express 5, Prisma 7 (PostgreSQL), Zod, TypeScript ESM, Node 26. Hexagonal: domain / application / infrastructure.     |
 | Accounts   | Sign-up with email confirmation, login, Google sign-in, logout, password change and reset, delete account.            |
 | Security   | Revocable JWT sessions, rate limits on auth and email routes, hashed one-time tokens, data scoped by user.            |
 | Admin      | A role granted from the command line, user list, account deletion with an audit trail, weekly sign-up metrics.        |
@@ -61,7 +61,7 @@ The new repository starts from a single commit, without this one's history.
 
 ### 3. Run it locally
 
-Needs Node 24 (`nvm use`), Docker and `make`.
+Needs Node 26 (`nvm use`), Docker and `make`.
 
 ```bash
 cp apps/api/.env.example apps/api/.env   # set COMPOSE_PROJECT_NAME, JWT_SECRET

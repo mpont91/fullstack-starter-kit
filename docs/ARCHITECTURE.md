@@ -51,7 +51,7 @@ optional first, and removals take two deploys.
 ## Backend (`apps/api`)
 
 **Express 5 + Prisma 7 (PostgreSQL, `@prisma/adapter-pg`) + Zod, TypeScript ESM,
-Node 24.** A small, well-known stack with no framework magic: the whole request
+Node 26.** A small, well-known stack with no framework magic: the whole request
 path fits in one's head.
 
 **Hexagonal architecture** (domain / application / infrastructure). Every
