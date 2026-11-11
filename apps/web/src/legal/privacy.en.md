@@ -5,7 +5,7 @@ updated: 2026-10-22
 <!--
 A template. Everything in [brackets] is the product's to fill in, and the
 sections marked "the product's own data" are where what it stores goes. The
-providers listed are the ones the starter kit ships with: remove any you drop
+providers listed are the ones Unagi Start ships with: remove any you drop
 and add any you take on. Have it reviewed before opening to real users.
 -->
 

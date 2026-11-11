@@ -4,7 +4,7 @@
 > each app's `CLAUDE.md`. When a decision changes, edit its entry and add the
 > date and reason; don't delete the old reasoning.
 
-The decisions below came with the starter kit: they were made, and proven in
+The decisions below came with Unagi Start: they were made, and proven in
 production, in the owner's earlier projects. The product's own decisions are
 added after them, in the same format.
 

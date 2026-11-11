@@ -1,5 +1,5 @@
 export default {
-  'app.description': 'A web app built on the starter kit.',
+  'app.description': 'A web app built on Unagi Start.',
 
   'nav.home': 'Home',
   'nav.contact': 'Contact',

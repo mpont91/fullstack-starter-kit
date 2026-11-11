@@ -7,9 +7,8 @@ working inside that app.
 ## What this is
 
 **[Product]** ([domain]) — [one sentence on what it does and for whom]. Started
-from the `fullstack-starter-kit` template: accounts, email, two languages,
-monitoring, backups and deployment came with it. The product is described in
-`docs/`:
+from the `unagistart` template: accounts, email, two languages, monitoring,
+backups and deployment came with it. The product is described in `docs/`:
 
 | Document                | What it holds                                   | Changes                   |
 | ----------------------- | ----------------------------------------------- | ------------------------- |
@@ -241,10 +240,10 @@ the API's `CORS_ORIGINS` and `FRONTEND_URL` move with it.
 ## The template this started from
 
 This repository started from
-[`mpont91/fullstack-starter-kit`](https://github.com/mpont91/fullstack-starter-kit),
-the owner's template for new projects. What isn't about this product (the
-tooling, auth, email, monitoring, deploy, backups, the conventions in the
-`CLAUDE.md` files) is shared with it and with the owner's other projects.
+[`mpont91/unagistart`](https://github.com/mpont91/unagistart), the owner's
+template for new projects. What isn't about this product (the tooling, auth,
+email, monitoring, deploy, backups, the conventions in the `CLAUDE.md` files) is
+shared with it and with the owner's other projects.
 
 - When a change here improves one of those generic parts (a bug in the auth
   flow, a better deploy step, a new convention), say so at the end of the task,
@@ -252,11 +251,11 @@ tooling, auth, email, monitoring, deploy, backups, the conventions in the
 - When the template has improved a generic part, this project may take it. To
   compare, read the template:
   - Normally it's cloned as a sibling of this repository, in the same parent
-    folder (`../fullstack-starter-kit`). When it is, bring it up to date first
-    (`git -C ../fullstack-starter-kit pull --ff-only`) and read it there.
+    folder (`../unagistart`). When it is, bring it up to date first
+    (`git -C ../unagistart pull --ff-only`) and read it there.
   - When it isn't, read it from GitHub, where it's public:
-    `gh api repos/mpont91/fullstack-starter-kit/contents/<path>` for a file, or
-    `gh repo clone mpont91/fullstack-starter-kit` into a temporary directory.
+    `gh api repos/mpont91/unagistart/contents/<path>` for a file, or
+    `gh repo clone mpont91/unagistart` into a temporary directory.
 
 ## Aligned with the docs
 

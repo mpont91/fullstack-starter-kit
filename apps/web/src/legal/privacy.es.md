@@ -5,7 +5,7 @@ updated: 2026-10-22
 <!--
 Una plantilla. Todo lo que va [entre corchetes] lo rellena cada producto, y las
 partes de "los datos propios del producto" son donde va lo que guarda. Los
-proveedores son los que trae el starter kit: quita los que no uses y añade los
+proveedores son los que trae Unagi Start: quita los que no uses y añade los
 nuevos. Hazla revisar antes de abrir el producto a usuarios reales.
 -->
 

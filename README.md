@@ -1,4 +1,4 @@
-# Fullstack starter kit
+# Unagi Start
 
 The base every new project starts from: a monorepo with a typed API contract, an
 Express API in hexagonal layers, an Astro + Vue web, and everything a product
@@ -30,8 +30,8 @@ explained again: the _why_ is in `docs/ARCHITECTURE.md`, the _how_ in the
 
 ### 1. Create the repository
 
-On [the template's page](https://github.com/mpont91/fullstack-starter-kit),
-**Use this template → Create a new repository**, then clone it with SSH:
+On [the template's page](https://github.com/mpont91/unagistart), **Use this
+template → Create a new repository**, then clone it with SSH:
 
 ```bash
 git clone git@github.com:<owner>/<name>.git
