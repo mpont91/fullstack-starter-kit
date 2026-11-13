@@ -4,6 +4,7 @@ import { settingsSchema } from '../src/domain/types/settings'
 
 const valid = {
   port: '3000',
+  databaseUrl: 'postgresql://user:password@localhost:5432/app',
   corsOrigins: ['http://localhost:4321'],
   auth: {
     jwtSecret: 'secret',
@@ -23,6 +24,12 @@ describe('settingsSchema', () => {
 
   it('requires at least one CORS origin', () => {
     assert.throws(() => settingsSchema.parse({ ...valid, corsOrigins: [] }))
+  })
+
+  it('refuses to boot without the database URL', () => {
+    assert.throws(() =>
+      settingsSchema.parse({ ...valid, databaseUrl: undefined }),
+    )
   })
 
   it('refuses to boot without the frontend URL', () => {

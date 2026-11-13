@@ -22,6 +22,7 @@ export const monitoringSettingsSchema = z.object({
 
 export const settingsSchema = z.object({
   port: z.coerce.number().int().positive(),
+  databaseUrl: z.url(),
   corsOrigins: z.array(z.string().min(1)).min(1),
   auth: authSettingsSchema,
   email: emailSettingsSchema,

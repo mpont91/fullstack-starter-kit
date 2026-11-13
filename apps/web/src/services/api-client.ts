@@ -1,9 +1,10 @@
 import type { ZodType } from 'zod'
+import { PUBLIC_API_URL } from 'astro:env/client'
 import { ApiError } from './api-error'
 import { clearSession, getToken } from './session'
 import { languageFromPath, localizePath } from '../helpers/locale-helper'
 
-const BASE_URL = import.meta.env.PUBLIC_API_URL.replace(/\/+$/, '')
+const BASE_URL = PUBLIC_API_URL.replace(/\/+$/, '')
 
 function redirectToLogin(): void {
   clearSession()

@@ -30,10 +30,11 @@ From the repo root, prefix with `web/` (`make web/check`).
 | `make check` | build (the typecheck); the full gate is the root `make check` |
 | `make test`  | Run the tests (`node:test` through `tsx`)                     |
 
-The only npm script is `build` (`packages/shared` → `vue-tsc --noEmit` →
-`astro check` → `astro build`), because Vercel runs it. It _is_ the typechecker,
-and `make check` runs it first for that reason; building `packages/shared` first
-means a stale contract can't slip through.
+The only npm script is `build` (`packages/shared` → `astro check` →
+`vue-tsc --noEmit` → `astro build`), because Vercel runs it. `astro check` goes
+first because it generates the types `vue-tsc` needs, `astro:env`'s among them.
+It _is_ the typechecker, and `make check` runs it first for that reason;
+building `packages/shared` first means a stale contract can't slip through.
 
 ## Running against the backend
 
@@ -51,8 +52,15 @@ If you change `WEB_PORT`, change them too.
 `PUBLIC_API_URL`, `PUBLIC_SENTRY_DSN` (optional; without it nothing is reported)
 and `WEB_PORT`. `PUBLIC_API_URL` is `PUBLIC_`-prefixed, so **it is inlined into
 the client bundle** — never put a secret in this app's env, and never commit
-`.env`. `WEB_PORT` is read in `astro.config.mjs` (through Vite's `loadEnv`) to
-set the dev server port; never hardcode a port.
+`.env`.
+
+**Every variable the app reads is declared in `env.schema`** in
+`astro.config.mjs` and imported from `astro:env/client`, never read from
+`import.meta.env`. A missing or malformed one stops the build with its name
+(Vercel included). A new variable is declared there, required unless the app
+works without it, and added to `.env.example` and to Vercel. `WEB_PORT` is read
+in `astro.config.mjs` (through Vite's `loadEnv`) to set the dev server port;
+never hardcode a port.
 
 A `.env` may list the production URL and then the localhost one; the last
 assignment wins, so the trailing line is the active override.

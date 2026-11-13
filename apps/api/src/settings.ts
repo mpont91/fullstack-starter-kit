@@ -4,6 +4,7 @@ import { type Settings, settingsSchema } from './domain/types/settings'
 
 export const settings: Settings = settingsSchema.parse({
   port: process.env.PORT ?? 3000,
+  databaseUrl: process.env.DATABASE_URL,
   corsOrigins: (process.env.CORS_ORIGINS ?? '')
     .split(',')
     .map((origin) => origin.trim())

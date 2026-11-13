@@ -153,10 +153,10 @@ invisible until you add its branch here** — it will surface as a 500.
 collaborator is built there and nowhere else. It returns a _new_ instance per
 call — fine for stateless classes; don't rely on identity.
 
-**Configuration.** Read `process.env` in `src/settings.ts` (and `prisma.ts`)
-only. Everything else receives values through constructors. The shape is
-validated by `settingsSchema` in `domain/types/settings.ts`, so a missing secret
-stops the boot instead of failing on the first request that needs it.
+**Configuration.** Read `process.env` in `src/settings.ts` only. Everything else
+receives values through constructors. The shape is validated by `settingsSchema`
+in `domain/types/settings.ts`, so a missing secret stops the boot instead of
+failing on the first request that needs it.
 
 **The app name is never hardcoded.** Use `APP_NAME` and `APP_DOMAIN` from
 `@app/shared` (the sender address of every email is built from them).
@@ -393,8 +393,8 @@ Backups use `COMPOSE_PROFILES` and `BACKUP_AGE_RECIPIENT`, set only on the
 server, and `BACKUP_B2_KEY_ID` and `BACKUP_B2_APPLICATION_KEY`, set on the
 server and on the owner's machine, to restore (see "Backups").
 
-Read env vars only in `src/settings.ts` and
-`src/infrastructure/persistence/prisma.ts`.
+Read env vars only in `src/settings.ts` (`prisma.config.ts`, for the Prisma CLI,
+reads `DATABASE_URL` too).
 
 ## Deployment
 

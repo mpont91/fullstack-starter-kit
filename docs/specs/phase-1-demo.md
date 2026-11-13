@@ -79,6 +79,11 @@ fixed, so this spec stays the full record of what the phase did.
 - [x] The footer's links wrap on a phone. With four links they fit, but they
       stayed on one line, so a project that added more (Unagi Poker has seven)
       pushed the page wider than the screen.
+- [ ] A missing or malformed environment variable stops the build or the boot
+      with a message that names it. Vercel's first build without
+      `PUBLIC_API_URL` failed with "Cannot read properties of undefined (reading
+      'replace')"; the web now declares its variables with `astro:env`, and the
+      API validates `DATABASE_URL` with the rest of its settings.
 
 ## Out of scope
 

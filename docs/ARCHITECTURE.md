@@ -169,6 +169,14 @@ access.
 **Design tokens, dark-first.** Colours are named tokens in one `@theme` block;
 components never use raw colours, so a product's look is a palette change.
 
+**Its environment is declared and checked at build.** The variables the web
+reads are declared with `astro:env` in `astro.config.mjs` and imported from
+`astro:env/client`. They're inlined into a static bundle, so the build is the
+last moment to catch one: a missing or malformed one stops it with its name,
+rather than shipping a site whose every request fails. Optional means the app
+works without it (Sentry's DSN); nothing gets a default that would only be right
+on one machine.
+
 **Vercel Analytics**, aggregated and cookie-free, so there's no cookie banner.
 
 **Logic out of components, so it can be tested.** Anything with logic is a `.ts`

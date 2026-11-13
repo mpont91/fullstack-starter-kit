@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "npm run build -w @app/shared && vue-tsc --noEmit && astro check && astro build"
+    "build": "npm run build -w @app/shared && astro check && vue-tsc --noEmit && astro build"
   },
   "dependencies": {
     "@app/shared": "*",

@@ -201,6 +201,7 @@ const languageLinks = Object.entries(languages).map(([code, label]) => ({
 </header>
 
 <script>
+  import { PUBLIC_API_URL } from 'astro:env/client'
   import { getToken, getUser, setUser } from '../services/session'
   import { apiLanguageFromSite } from '../helpers/locale-helper'
   import type { Language } from '../i18n'
@@ -241,7 +242,7 @@ const languageLinks = Object.entries(languages).map(([code, label]) => ({
       const user = getUser()
       if (user) setUser({ ...user, language: apiLanguageFromSite(code) })
 
-      fetch(`${import.meta.env.PUBLIC_API_URL}/auth/me`, {
+      fetch(`${PUBLIC_API_URL}/auth/me`, {
         method: 'PATCH',
         headers: {
           Authorization: `Bearer ${token}`,
